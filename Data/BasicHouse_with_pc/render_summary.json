@@ -1,0 +1,94 @@
+{
+  "input_source": "/mnt/data/home/anedung/projects/databim/artifacts/step1/BasicHouse_with_pc/_ifcgeom_scene.obj",
+  "import_mode": "mesh",
+  "frames_requested": null,
+  "frames": 160,
+  "frames_auto_estimated": true,
+  "auto_frame_spacing_m": 0.35,
+  "trajectory_length_m": 55.776500326103445,
+  "min_clearance_target_m": 0.8,
+  "min_clearance_observed_m": 0.002499818801879883,
+  "min_forward_clearance_m": 0.60999995470047,
+  "rgb_dir": "/mnt/data/home/anedung/projects/databim/artifacts/step1/BasicHouse_with_pc/rgb",
+  "depth_exr_dir": "/mnt/data/home/anedung/projects/databim/artifacts/step1/BasicHouse_with_pc/depth_exr",
+  "depth_png16_dir": "/mnt/data/home/anedung/projects/databim/artifacts/step1/BasicHouse_with_pc/depth_png16",
+  "pose_file": "/mnt/data/home/anedung/projects/databim/artifacts/step1/BasicHouse_with_pc/pose/poses.txt",
+  "pointcloud": {
+    "enabled": true,
+    "path": "/mnt/data/home/anedung/projects/databim/artifacts/step1/BasicHouse_with_pc/pointcloud/scene.ply",
+    "points": 239890,
+    "target_points": 250000,
+    "voxel_size_m": 0.03,
+    "mesh_objects": 154,
+    "triangles": 622043,
+    "surface_area_m2": 3761.652582778798
+  },
+  "trajectory_plot": "/mnt/data/home/anedung/projects/databim/artifacts/step1/BasicHouse_with_pc/trajectory_topdown.svg",
+  "bounds": {
+    "min_xyz": [
+      -20.42935562133789,
+      -12.978875160217285,
+      -3.623471975326538
+    ],
+    "max_xyz": [
+      28.3771915435791,
+      16.31818962097168,
+      0.29990071058273315
+    ],
+    "center": [
+      3.9739179611206055,
+      1.6696572303771973,
+      -1.6617856323719025
+    ],
+    "size": [
+      48.80654716491699,
+      29.297064781188965,
+      3.9233726859092712
+    ]
+  },
+  "blender_version": [
+    4,
+    0,
+    2
+  ],
+  "import_operator": "bpy.ops.wm.obj_import",
+  "color_mode": "class",
+  "labels_count": 3443,
+  "mesh_up_axis": "y",
+  "trajectory_algorithm_requested": "auto",
+  "trajectory_algorithm_used": "semantic",
+  "trajectory_fallbacks": [],
+  "trajectory_smoothing": {
+    "enabled": true,
+    "passes": [
+      2,
+      1
+    ],
+    "beta": [
+      0.22,
+      0.15
+    ]
+  },
+  "planning_bounds": {
+    "min_xyz": [
+      -4.365056037902832,
+      -2.6257097721099854,
+      -2.407649278640747
+    ],
+    "max_xyz": [
+      14.923376083374023,
+      4.672824382781982,
+      -0.011041906662285328
+    ],
+    "center": [
+      5.279160022735596,
+      1.0235573053359985,
+      -1.2093455926515162
+    ],
+    "size": [
+      19.288432121276855,
+      7.298534154891968,
+      2.3966073719784617
+    ]
+  }
+}
