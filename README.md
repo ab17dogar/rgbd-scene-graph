@@ -659,7 +659,7 @@ not captured. Implications:
 - RGB has no motion blur, no exposure changes.
 
 Findings here transfer to a real captured RGB-D sequence with caveats.
-The README would then need to discuss depth de-noising, pose-graph
+We would then need to discuss depth de-noising, pose-graph
 optimisation, and exposure-invariant SAM 2 prompting, none of which we
 implemented because the data didn't need them.
 
@@ -728,8 +728,8 @@ A version of this pipeline with the constraints lifted would look like:
 
 ## 8. Related work
 
-The choices above sit on a literature trail; the README's reasoning is
-informed by these even where we don't replicate them exactly.
+The choices above sit on a literature trail below; the README's reasoning is
+inspired by these even where we don't replicate them exactly.
 
 [1] I. Armeni et al., "3D Scene Graph: A Structure for Unified Semantics, 3D Space, and Camera," in *Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV)*, 2019, pp. 5664-5673. 
 Available: https://arxiv.org/abs/1910.02527
