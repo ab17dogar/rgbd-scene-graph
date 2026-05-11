@@ -103,9 +103,9 @@ synagoge run is steered only by `data/synagoge_with_pc/prompt.txt` (its
 architectural vocabulary) plus `--auto_keyframes 8` (because 383 frames
 benefit from more anchors). No dataset-specific code branches.
 
-See [docs/inspection_findings.md](docs/inspection_findings.md) for the
-data-inspection report, [docs/coordinates.md](docs/coordinates.md) for the
-verified geometry conventions.
+**Important Data Caveats**:
+- **No `.ifc` file provided**: The challenge dataset omitted the raw IFC file, so geometry and semantics are extracted from the shipped `_ifcgeom_scene.obj` and `_ifcgeom_scene.labels.json`. (An IfcOpenShell loader is included in `src/rgbdsg/ifc/from_ifc_file.py` to demonstrate the canonical API path).
+- **No `IfcSpace`**: The data has no predefined rooms. We synthesise room polygons via point-cloud BEV morphology (`src/rgbdsg/ifc/rooms_bev.py`).
 
 ---
 
@@ -403,9 +403,6 @@ P_world = T_wc @ [P_cam; 1]
 | `cv_ray` | 243 mm | 1796 mm |
 | `cv_z` | 292 mm | 2054 mm |
 
-Full numerical breakdown and the rejected-alternatives table live in
-[docs/coordinates.md](docs/coordinates.md).
-
 ---
 
 ## 4. Repository layout
@@ -415,11 +412,7 @@ Full numerical breakdown and the rejected-alternatives table live in
 ├── data/                       # gitignored; the challenge dataset goes here
 │   ├── BasicHouse_with_pc/
 │   └── synagoge_with_pc/
-├── docs/
-│   ├── inspection_findings.md  # Step 1 — data conventions report
-│   ├── coordinates.md          # Step 2 — verified gl_z convention
-│   ├── inspection_report.json  # raw output of inspect_data.py
-│   └── media/                  # README screenshots + verification PLYs
+├── media/                      # README screenshots + verification PLYs
 ├── scripts/
 │   ├── inspect_data.py         # Step 1 driver (no model deps)
 │   ├── verify_pose.py          # Step 2 driver (4-convention shootout)

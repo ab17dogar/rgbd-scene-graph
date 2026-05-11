@@ -1,8 +1,7 @@
 """Synthesise rooms from BEV occupancy of the architectural point cloud.
 
 The challenge dataset ships no `IfcSpace` entities (see
-`docs/inspection_findings.md` §1.2 for the discovery and the lab's parenthetical
-"convert pointcloud to a BEV map" hint that motivates this module). Without
+The challenge dataset ships no `IfcSpace` entities. Without
 IfcSpace we cannot do the canonical Task-B Room→Object hierarchy, so we
 *synthesise* room polygons from the architectural pointcloud.
 

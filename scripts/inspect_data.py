@@ -378,7 +378,7 @@ def inspect_scene(scene_dir: Path) -> dict[str, Any]:
 def main() -> None:
     p = argparse.ArgumentParser()
     p.add_argument("--data_dir", type=Path, default=Path("./data"))
-    p.add_argument("--out", type=Path, default=Path("./docs/inspection_report.json"))
+    p.add_argument("--out", type=Path, default=Path("./inspection_report.json"))
     args = p.parse_args()
 
     scene_dirs = sorted(d for d in args.data_dir.iterdir() if d.is_dir())

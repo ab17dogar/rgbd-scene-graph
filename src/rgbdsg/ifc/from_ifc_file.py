@@ -19,7 +19,7 @@ Coordinate frame
 ================
 IfcOpenShell with `USE_WORLD_COORDS=True` returns IFC's native world
 coordinates (typically Y-up for Revit-exported IFC2x3). Our pipeline's
-verified world frame (see `docs/coordinates.md`) is the camera-pose frame
+verified world frame is the camera-pose frame
 which Blender's OBJ importer rotates to via `(x, y, z) → (x, -y, -z)`.
 We apply that same `OBJ_TO_WORLD` rotation here so IFC entities land in
 the verified frame and align with depth back-projections to within mm.
@@ -139,7 +139,7 @@ def extract_ifc_entities(
 
     Returns:
         List of `IFCEntity` records, in the pipeline's verified world frame
-        (Z growing downward, see `docs/coordinates.md`).
+        (Z growing downward).
     """
     import ifcopenshell.geom
 

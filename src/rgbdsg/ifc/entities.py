@@ -5,7 +5,7 @@ An IFC entity is one architectural element (wall, door, slab, ...) with:
   - a class (e.g. `IfcWallStandardCase`),
   - a human-readable name,
   - a 3D mesh in WORLD coordinates (Z-up, after applying the OBJ→world
-    rotation documented in `docs/coordinates.md`).
+    rotation).
 
 The pipeline only needs spatial summaries (centroid, bbox), but we keep an
 optional handle to the mesh for visualisation. Heavy mesh data is opt-in

@@ -71,7 +71,7 @@ class Pose:
 
     Convention: T_wc — applying it to a camera-frame point yields a world-
     frame point. Camera-frame axes are OpenGL/Blender (+Y up, -Z forward).
-    See `docs/coordinates.md`.
+    In the verified gl_z convention.
     """
     T_wc: np.ndarray  # shape (4, 4), float64
 
@@ -117,7 +117,7 @@ class Frame:
         """Boolean HxW mask: True where depth is finite, positive, < far.
 
         Used to suppress 'no hit' pixels (sky / past-far rays) before any
-        downstream geometry. See `docs/inspection_findings.md` §4.
+        downstream geometry.
         """
         d = self.depth_m
         return np.isfinite(d) & (d > 0) & (d < self.intrinsics.saturation_threshold_m)

@@ -1,7 +1,7 @@
 """Camera projection and back-projection in the verified gl_z convention.
 
 The convention used throughout this codebase is documented in detail in
-`docs/coordinates.md`. Summary:
+```
 
   * Camera frame: OpenGL/Blender. +X right, +Y up, **-Z forward** (camera
     looks down -Z in its own frame).

@@ -14,7 +14,7 @@ Coordinate frame: the OBJ stores vertices in its own native frame, which
 relates to the world (camera-pose) frame by a 180° rotation around the X
 axis: `(x, y, z)_obj → (x, -y, -z)_world`. This was determined empirically
 by comparing OBJ bounds to `pointcloud/scene.ply` bounds (both contain the
-same building, the latter is in world coords). See `docs/coordinates.md` §5.
+same building, the latter is in world coords).
 """
 
 from __future__ import annotations

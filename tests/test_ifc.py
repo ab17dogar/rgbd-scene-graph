@@ -39,7 +39,7 @@ def test_no_ifcspace_present(scene_dir: Path) -> None:
     ents = load_ifc_entities(scene_dir)
     classes = {e.ifc_class for e in ents}
     assert "IfcSpace" not in classes, \
-        "IfcSpace appeared! Update docs/inspection_findings.md and the BEV-rooms rationale."
+        "IfcSpace appeared! Update the BEV-rooms rationale."
 
 
 def test_door_count_matches_inspection(scene_dir: Path) -> None:

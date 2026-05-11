@@ -18,8 +18,8 @@ Run:
         --frames 0 80 159
 
 Outputs (per frame):
-    docs/media/pose_verify/<scene>/frame<idx>_<convention>.ply
-    docs/media/pose_verify/<scene>/_score.json
+    media/pose_verify/<scene>/frame<idx>_<convention>.ply
+    media/pose_verify/<scene>/_score.json
 """
 
 from __future__ import annotations
@@ -279,7 +279,7 @@ def main() -> None:
     p.add_argument("--stride", type=int, default=4,
                    help="pixel subsampling stride")
     p.add_argument("--out_dir", type=Path,
-                   default=Path("./docs/media/pose_verify"))
+                   default=Path("./media/pose_verify"))
     args = p.parse_args()
 
     K, info = load_intrinsics(args.scene)
