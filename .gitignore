@@ -20,7 +20,7 @@ models/
 
 # Bulk PLYs (keep documentation PLYs by exception below)
 *.ply
-!docs/media/**/*.ply
+!media/**/*.ply
 
 # SAM 2 JPEG cache (generated at runtime inside scene dirs)
 _sam2_jpg_cache/

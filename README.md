@@ -426,6 +426,7 @@ P_world = T_wc @ [P_cam; 1]
 │   └── synagoge_with_pc/
 ├── media/                      # README screenshots + verification PLYs
 ├── scripts/
+│   ├── download_weights.py     # fetches HF models and checkpoints
 │   ├── inspect_data.py         # Step 1 driver (no model deps)
 │   ├── verify_pose.py          # Step 2 driver (4-convention shootout)
 │   └── run_pipeline.py         # end-to-end: detection → fusion → graph → viz
@@ -442,6 +443,8 @@ P_world = T_wc @ [P_cam; 1]
 │   └── test_ifc.py             # OBJ→world rotation regression guards
 ├── outputs/                    # gitignored; pipeline outputs land here
 ├── weights/                    # gitignored; model checkpoints
+├── Dockerfile                  # unified linux container environment
+├── Makefile                    # shortcut targets for local & docker execution
 ├── pyproject.toml              # editable install + pytest config
 ├── requirements.txt            # frozen versions
 └── README.md
