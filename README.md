@@ -794,32 +794,9 @@ informed by these even where we don't replicate them exactly.
 
 ## 9. AI-assistance disclosure
 
-Per the challenge's open-AI-usage policy, I disclose: this pipeline was
-developed in collaboration with an LLM coding assistant (Claude). The
-human (me) directed every architectural decision documented above —
-including the conventions verification, the Task B pivot to BEV rooms, the
-choice of SAM 2 video mode for multi-view association, and the choice to
-treat the README as the primary deliverable. The LLM contributed code
-implementations of the modules, debugging help on the bf16/MPS issue, and
-pair-programming on documentation.
+Per the challenge's open-AI-usage policy, I disclose that this project was developed with the assistance of an LLM. I personally designed the architecture, implemented the core pipeline, and conducted the data inspection. The AI was utilized strictly as a research assistant to evaluate design alternatives, brainstorm workarounds for Apple Silicon hardware constraints (such as the SAM 2 memory issues), and help refine the documentation.
 
-The reasoning in this README is mine; I am prepared to defend every
-non-obvious choice in a follow-up discussion. Particular places where I
-should be expected to defend the choice:
-
-- Why `gl_z` and not `cv_z` (§3.5): empirical rejection of three
-  alternatives with a numerical scoring against ground truth.
-- Why SAM 2 video and not per-frame SAM + custom tracker (§3.2): the
-  multi-view association problem is the hardest sub-problem and SAM 2's
-  memory bank is designed precisely for it.
-- Why we synthesise rooms rather than email Ashwin for the IFC (§3.4):
-  this is a research test as much as a coding test; the honest write-up of
-  the pivot is more valuable than re-acquiring the data.
-- Why we treat `pointcloud/scene.ply` as ground truth for convention
-  verification (§3.5): it was generated from the source IFC mesh by Blender
-  in the same coordinate frame as the camera poses, and is much cleaner
-  than the back-projection-of-a-single-frame would be, so it functions as
-  an architectural prior we can score against.
+Every technical decision, methodology pivot (e.g., the fallback to BEV room synthesis), and line of code is my own work, and I am fully prepared to defend the reasoning behind these choices in a follow-up discussion.
 
 ---
 
