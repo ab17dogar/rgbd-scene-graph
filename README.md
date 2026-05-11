@@ -59,7 +59,7 @@ the BEV occupancy footprint that produced the room polygons:
 
 **Hierarchical tree view**: a 2D node-link diagram showing the semantic containment and object-to-object relationships (excluding fixtures for clarity):
 
-![BasicHouse hierarchical tree](media/basichouse_tree.png)
+![BasicHouse hierarchical tree](media/basichouse_with_pc_tree.png)
 
 | Pipeline stage | Wall-time | Output |
 |---|---:|---|
@@ -88,7 +88,7 @@ the BEV occupancy footprint that produced the room polygons:
 
 **Hierarchical tree view**:
 
-![synagoge hierarchical tree](media/synagoge_tree.png)
+![synagoge hierarchical tree](media/synagoge_with_pc_tree.png)
 
 | Pipeline stage | Wall-time | Output |
 |---|---:|---|
