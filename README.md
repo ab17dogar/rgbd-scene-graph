@@ -46,7 +46,7 @@ graph, plus the raw graph in GraphML + JSON:
 ### `BasicHouse_with_pc/` (160 frames, ~16 s, 10 fps, single-storey)
 
 **3D semantic scene graph** (Armeni et al. [1] 4-layer: Building → Storey → Room →
-Object/Fixture/Camera) — every node and edge geometry-accurate in the
+Object/Fixture/Camera) — every node and edge geometry-accurate in the 
 world frame:
 
 ![BasicHouse 3D semantic scene graph](media/basichouse_graph_3d.png)
