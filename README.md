@@ -15,7 +15,7 @@ change, and where the limits are*. The reasoning here is the core contribution o
 - [3. Methodology and justifications](#3-methodology-and-justifications) - Detailed reasoning behind architectural decisions, coordinate conventions, and data fallbacks.
 - [4. Repository layout](#4-repository-layout) - A guide to the codebase structure and module responsibilities.
 - [5. How to reproduce](#5-how-to-reproduce) - Step-by-step instructions for running the pipeline locally using Make and Docker.
-- [6. Limitations and concrete failure modes](#6-limitations-and-concrete-failure-modes) - Honest analysis of edge cases, hardware constraints, and geometric errors.
+- [6. Limitations and concrete failure modes](#6-limitations-and-concrete-failure-modes) - Analysis of edge cases, hardware constraints, and geometric errors.
 - [7. How this should ideally work](#7-how-this-should-ideally-work) - Proposed future improvements for a production-grade IFC integration.
 - [8. Related work](#8-related-work) - Academic literature and frameworks that inspired the pipeline design.
 - [9. AI-assistance disclosure](#9-ai-assistance-disclosure) - Transparency regarding the use of LLMs during development.
