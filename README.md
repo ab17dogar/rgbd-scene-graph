@@ -7,8 +7,7 @@
 
 This README is the primary deliverable. It documents *what the pipeline
 does, why each architectural choice was made, what the data forced us to
-change, and where the limits are*. The code in `src/rgbdsg/` is graded but
-secondary; the reasoning here is the load-bearing contribution.
+change, and where the limits are*. The reasoning here is the core contribution of this work while the code in src/rgbdsg/ is graded but secondary in importance.
 
 ## Table of Contents
 - [1. Result at a glance](#1-result-at-a-glance) - High-level overview of pipeline outputs, benchmarks, and performance metrics.
