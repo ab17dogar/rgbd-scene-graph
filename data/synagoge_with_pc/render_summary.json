@@ -1,0 +1,94 @@
+{
+  "input_source": "/mnt/data/home/anedung/projects/databim/artifacts/step1/synagoge_with_pc/_ifcgeom_scene.obj",
+  "import_mode": "mesh",
+  "frames_requested": null,
+  "frames": 383,
+  "frames_auto_estimated": true,
+  "auto_frame_spacing_m": 0.35,
+  "trajectory_length_m": 133.73830781039246,
+  "min_clearance_target_m": 0.8,
+  "min_clearance_observed_m": 2.384185791015625e-07,
+  "min_forward_clearance_m": 0.08410578966140747,
+  "rgb_dir": "/mnt/data/home/anedung/projects/databim/artifacts/step1/synagoge_with_pc/rgb",
+  "depth_exr_dir": "/mnt/data/home/anedung/projects/databim/artifacts/step1/synagoge_with_pc/depth_exr",
+  "depth_png16_dir": "/mnt/data/home/anedung/projects/databim/artifacts/step1/synagoge_with_pc/depth_png16",
+  "pose_file": "/mnt/data/home/anedung/projects/databim/artifacts/step1/synagoge_with_pc/pose/poses.txt",
+  "pointcloud": {
+    "enabled": true,
+    "path": "/mnt/data/home/anedung/projects/databim/artifacts/step1/synagoge_with_pc/pointcloud/scene.ply",
+    "points": 246561,
+    "target_points": 250000,
+    "voxel_size_m": 0.03,
+    "mesh_objects": 295,
+    "triangles": 422542,
+    "surface_area_m2": 10400.32880040924
+  },
+  "trajectory_plot": "/mnt/data/home/anedung/projects/databim/artifacts/step1/synagoge_with_pc/trajectory_topdown.svg",
+  "bounds": {
+    "min_xyz": [
+      -52.7724494934082,
+      -40.34772872924805,
+      -16.04965591430664
+    ],
+    "max_xyz": [
+      31.589262008666992,
+      20.161727905273438,
+      0.2999972701072693
+    ],
+    "center": [
+      -10.591593742370605,
+      -10.093000411987305,
+      -7.874829322099686
+    ],
+    "size": [
+      84.3617115020752,
+      60.509456634521484,
+      16.34965318441391
+    ]
+  },
+  "blender_version": [
+    4,
+    0,
+    2
+  ],
+  "import_operator": "bpy.ops.wm.obj_import",
+  "color_mode": "class",
+  "labels_count": 2074,
+  "mesh_up_axis": "y",
+  "trajectory_algorithm_requested": "auto",
+  "trajectory_algorithm_used": "semantic",
+  "trajectory_fallbacks": [],
+  "trajectory_smoothing": {
+    "enabled": true,
+    "passes": [
+      2,
+      1
+    ],
+    "beta": [
+      0.22,
+      0.15
+    ]
+  },
+  "planning_bounds": {
+    "min_xyz": [
+      -2.492039680480957,
+      -37.77753448486328,
+      -11.478652000427246
+    ],
+    "max_xyz": [
+      16.120601654052734,
+      19.167726516723633,
+      -1.3000001907348633
+    ],
+    "center": [
+      6.814280986785889,
+      -9.304903984069824,
+      -6.389326095581055
+    ],
+    "size": [
+      18.61264133453369,
+      56.945261001586914,
+      10.178651809692383
+    ]
+  }
+}
