@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rgbd-scene-graph"
+version = "0.1.0"
+description = "RGB-D scene graph generation with BIM/IFC priors (HiWi challenge)."
+requires-python = ">=3.11"
+authors = [{name = "Abu Bakar"}]
+readme = "README.md"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["rgbdsg*"]
+namespaces = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 100

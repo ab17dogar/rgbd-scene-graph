@@ -1,0 +1,34 @@
+# Heavy / generated artefacts
+data/
+Data/
+.venv/
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Pipeline outputs
+outputs/
+runs/
+checkpoints/
+weights/
+models/
+
+# Bulk PLYs (keep documentation PLYs by exception below)
+*.ply
+!docs/media/**/*.ply
+
+# SAM 2 JPEG cache (generated at runtime inside scene dirs)
+_sam2_jpg_cache/
+
+# Challenge description (reviewer already has it)
+HiWi Challenge Description v2.pdf
+
+# IDE
+.vscode/
+.idea/

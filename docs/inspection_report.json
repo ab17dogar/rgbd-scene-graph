@@ -1,0 +1,610 @@
+{
+  "scenes": [
+    {
+      "scene": "BasicHouse_with_pc",
+      "intrinsics": {
+        "width": 1024,
+        "height": 768,
+        "fx": 667.2513908946974,
+        "fy": 667.2513908946974,
+        "cx": 512.0,
+        "cy": 384.0,
+        "skew": 0.0,
+        "distortion_max_abs": 0.0,
+        "near_m": 0.05,
+        "far_m": 100.0,
+        "fps": 10.0
+      },
+      "depth_frame0": {
+        "far_m": 100.0,
+        "theoretical_png_per_meter": 655.35,
+        "estimated_median_png_per_meter": 649.6516062869755,
+        "scale_matches_theory": true,
+        "per_frame": {
+          "frame_000000": {
+            "exr_min_valid_m": 0.8544921875,
+            "exr_max_valid_m": 15.1171875,
+            "exr_median_valid_m": 2.02734375,
+            "pct_saturated": 0.0,
+            "png_min_nz": 527,
+            "png_max": 9879,
+            "estimated_png_per_meter": 648.9659833189257,
+            "png_vs_exr_residual_units": 19.947977071371042
+          },
+          "frame_000040": {
+            "exr_min_valid_m": 1.2314453125,
+            "exr_max_valid_m": 9.5078125,
+            "exr_median_valid_m": 4.046875,
+            "pct_saturated": 0.0,
+            "png_min_nz": 775,
+            "png_max": 6201,
+            "estimated_png_per_meter": 649.6516062869755,
+            "png_vs_exr_residual_units": 11.105117235581474
+          },
+          "frame_000080": {
+            "exr_min_valid_m": 1.119140625,
+            "exr_max_valid_m": 12.7890625,
+            "exr_median_valid_m": 2.93359375,
+            "pct_saturated": 0.0,
+            "png_min_nz": 701,
+            "png_max": 8353,
+            "estimated_png_per_meter": 650.4728672663323,
+            "png_vs_exr_residual_units": 19.025357913337757
+          },
+          "frame_000120": {
+            "exr_min_valid_m": 0.57958984375,
+            "exr_max_valid_m": 18.21875,
+            "exr_median_valid_m": 3.48046875,
+            "pct_saturated": 0.0,
+            "png_min_nz": 347,
+            "png_max": 11913,
+            "estimated_png_per_meter": 651.1841265151851,
+            "png_vs_exr_residual_units": 19.086351507854943
+          },
+          "frame_000159": {
+            "exr_min_valid_m": 0.84814453125,
+            "exr_max_valid_m": 4.71484375,
+            "exr_median_valid_m": 1.7568359375,
+            "pct_saturated": 0.0,
+            "png_min_nz": 523,
+            "png_max": 3059,
+            "estimated_png_per_meter": 641.7047212715324,
+            "png_vs_exr_residual_units": 10.036819734907567
+          }
+        }
+      },
+      "poses": {
+        "n_poses_txt": 160,
+        "n_frames_json": 160,
+        "bottom_row_is_0001": true,
+        "rotation_orthogonality_err": 7.738570859672222e-07,
+        "rotation_det_min": 0.9999996792746493,
+        "rotation_det_max": 1.0000007418609858,
+        "translation_xyz_min_m": [
+          -2.35441256,
+          -2.33066225,
+          -1.6067605
+        ],
+        "translation_xyz_max_m": [
+          13.13968468,
+          3.65830207,
+          -0.50999939
+        ],
+        "translation_xyz_span_m": [
+          15.49409724,
+          5.98896432,
+          1.09676111
+        ],
+        "vertical_axis_guess": "z",
+        "txt_vs_json_t_max_abs_diff": 4.990768409651736e-09,
+        "txt_vs_json_R_max_abs_diff": 3.8852428352331714e-07,
+        "interpretation": "world-from-camera (T_wc): camera origin = pose[:,:3,3]"
+      },
+      "ifc_labels": {
+        "n_entities": 3443,
+        "n_distinct_classes": 36,
+        "presence_check": {
+          "IfcSpace": 0,
+          "IfcDoor": 8,
+          "IfcBuildingStorey": 2,
+          "IfcWall": 0,
+          "IfcWallStandardCase": 13,
+          "IfcSlab": 3,
+          "IfcWindow": 19
+        },
+        "all_classes_sorted_by_count": [
+          [
+            "IfcPropertySet",
+            1575
+          ],
+          [
+            "IfcRelDefinesByProperties",
+            1253
+          ],
+          [
+            "IfcRelAssociatesMaterial",
+            152
+          ],
+          [
+            "IfcFurnishingElement",
+            71
+          ],
+          [
+            "IfcElementQuantity",
+            71
+          ],
+          [
+            "IfcRelDefinesByType",
+            50
+          ],
+          [
+            "IfcOpeningElement",
+            28
+          ],
+          [
+            "IfcRelVoidsElement",
+            28
+          ],
+          [
+            "IfcFurnitureType",
+            27
+          ],
+          [
+            "IfcRelFillsElement",
+            27
+          ],
+          [
+            "IfcWindow",
+            19
+          ],
+          [
+            "IfcDistributionPort",
+            19
+          ],
+          [
+            "IfcRelConnectsPathElements",
+            19
+          ],
+          [
+            "IfcRelConnectsPortToElement",
+            19
+          ],
+          [
+            "IfcWallStandardCase",
+            13
+          ],
+          [
+            "IfcDoor",
+            8
+          ],
+          [
+            "IfcFlowTerminal",
+            7
+          ],
+          [
+            "IfcWindowStyle",
+            6
+          ],
+          [
+            "IfcWindowLiningProperties",
+            6
+          ],
+          [
+            "IfcDistributionElementType",
+            5
+          ],
+          [
+            "IfcBuildingElementProxy",
+            4
+          ],
+          [
+            "IfcBuildingElementProxyType",
+            4
+          ],
+          [
+            "IfcRelAggregates",
+            4
+          ],
+          [
+            "IfcSlab",
+            3
+          ],
+          [
+            "IfcDoorStyle",
+            3
+          ],
+          [
+            "IfcSlabType",
+            3
+          ],
+          [
+            "IfcDoorLiningProperties",
+            3
+          ],
+          [
+            "IfcDoorPanelProperties",
+            3
+          ],
+          [
+            "IfcRelAssociatesClassification",
+            3
+          ],
+          [
+            "IfcBuildingStorey",
+            2
+          ],
+          [
+            "IfcWallType",
+            2
+          ],
+          [
+            "IfcRelContainedInSpatialStructure",
+            2
+          ],
+          [
+            "IfcRoof",
+            1
+          ],
+          [
+            "IfcBuilding",
+            1
+          ],
+          [
+            "IfcSite",
+            1
+          ],
+          [
+            "IfcProject",
+            1
+          ]
+        ]
+      },
+      "pointcloud": {
+        "ply_path": "scene.ply",
+        "n_points": 239890,
+        "min_xyz": [
+          -20.406478881835938,
+          -12.97434139251709,
+          -3.623426914215088
+        ],
+        "max_xyz": [
+          28.261232376098633,
+          16.305740356445312,
+          0.29990100860595703
+        ],
+        "size_xyz": [
+          48.66770935058594,
+          29.28008270263672,
+          3.923327922821045
+        ],
+        "centroid_xyz": [
+          3.660841226577759,
+          0.5275007486343384,
+          -0.8261933922767639
+        ]
+      },
+      "trajectory_in_pc": {
+        "trajectory_inside_pointcloud_bbox": true,
+        "axis_overshoot_min_m": [
+          -18.052066321835937,
+          -10.64367914251709,
+          -2.016666414215088
+        ],
+        "axis_overshoot_max_m": [
+          -15.121547696098633,
+          -12.647438286445313,
+          -0.8099003986059571
+        ]
+      }
+    },
+    {
+      "scene": "synagoge_with_pc",
+      "intrinsics": {
+        "width": 1024,
+        "height": 768,
+        "fx": 667.2513908946974,
+        "fy": 667.2513908946974,
+        "cx": 512.0,
+        "cy": 384.0,
+        "skew": 0.0,
+        "distortion_max_abs": 0.0,
+        "near_m": 0.05,
+        "far_m": 100.0,
+        "fps": 10.0
+      },
+      "depth_frame0": {
+        "far_m": 100.0,
+        "theoretical_png_per_meter": 655.35,
+        "estimated_median_png_per_meter": 649.5488185722597,
+        "scale_matches_theory": true,
+        "per_frame": {
+          "frame_000000": {
+            "exr_min_valid_m": 1.0732421875,
+            "exr_max_valid_m": 17.828125,
+            "exr_median_valid_m": 1.990234375,
+            "pct_saturated": 53.995513916015625,
+            "png_min_nz": 671,
+            "png_max": 65535,
+            "estimated_png_per_meter": 649.5488185722597,
+            "png_vs_exr_residual_units": 21.396485294548256
+          },
+          "frame_000095": {
+            "exr_min_valid_m": 0.8369140625,
+            "exr_max_valid_m": 10.5625,
+            "exr_median_valid_m": 3.291015625,
+            "pct_saturated": 0.0,
+            "png_min_nz": 516,
+            "png_max": 6893,
+            "estimated_png_per_meter": 650.4244454672537,
+            "png_vs_exr_residual_units": 21.481039605735305
+          },
+          "frame_000191": {
+            "exr_min_valid_m": 1.3251953125,
+            "exr_max_valid_m": 5.5234375,
+            "exr_median_valid_m": 3.03515625,
+            "pct_saturated": 0.0,
+            "png_min_nz": 836,
+            "png_max": 3589,
+            "estimated_png_per_meter": 648.0090205477361,
+            "png_vs_exr_residual_units": 9.825246041393257
+          },
+          "frame_000287": {
+            "exr_min_valid_m": 0.78173828125,
+            "exr_max_valid_m": 9.8671875,
+            "exr_median_valid_m": 1.107421875,
+            "pct_saturated": 0.0,
+            "png_min_nz": 480,
+            "png_max": 6437,
+            "estimated_png_per_meter": 650.1217463678983,
+            "png_vs_exr_residual_units": 26.591652489005924
+          },
+          "frame_000382": {
+            "exr_min_valid_m": 0.9951171875,
+            "exr_max_valid_m": 17.90625,
+            "exr_median_valid_m": 1.9462890625,
+            "pct_saturated": 55.91862996419271,
+            "png_min_nz": 620,
+            "png_max": 65535,
+            "estimated_png_per_meter": 649.4464107332905,
+            "png_vs_exr_residual_units": 21.12484488383984
+          }
+        }
+      },
+      "poses": {
+        "n_poses_txt": 383,
+        "n_frames_json": 383,
+        "bottom_row_is_0001": true,
+        "rotation_orthogonality_err": 9.2076695490384e-07,
+        "rotation_det_min": 0.9999995137629051,
+        "rotation_det_max": 1.0000011115530856,
+        "translation_xyz_min_m": [
+          1.14315057,
+          -5.03395844,
+          -9.41120148
+        ],
+        "translation_xyz_max_m": [
+          14.40060329,
+          14.61210728,
+          -1.09951603
+        ],
+        "translation_xyz_span_m": [
+          13.25745272,
+          19.64606572,
+          8.31168545
+        ],
+        "vertical_axis_guess": "z",
+        "txt_vs_json_t_max_abs_diff": 4.992676494453008e-09,
+        "txt_vs_json_R_max_abs_diff": 4.5567473949681414e-07,
+        "interpretation": "world-from-camera (T_wc): camera origin = pose[:,:3,3]"
+      },
+      "ifc_labels": {
+        "n_entities": 2074,
+        "n_distinct_classes": 39,
+        "presence_check": {
+          "IfcSpace": 0,
+          "IfcDoor": 5,
+          "IfcBuildingStorey": 9,
+          "IfcWall": 11,
+          "IfcWallStandardCase": 12,
+          "IfcSlab": 12,
+          "IfcWindow": 30
+        },
+        "all_classes_sorted_by_count": [
+          [
+            "IfcPropertySet",
+            733
+          ],
+          [
+            "IfcRelDefinesByProperties",
+            640
+          ],
+          [
+            "IfcRoof",
+            116
+          ],
+          [
+            "IfcRelDefinesByType",
+            96
+          ],
+          [
+            "IfcRelAssociatesMaterial",
+            40
+          ],
+          [
+            "IfcOpeningElement",
+            34
+          ],
+          [
+            "IfcRelVoidsElement",
+            34
+          ],
+          [
+            "IfcColumn",
+            31
+          ],
+          [
+            "IfcRelFillsElement",
+            31
+          ],
+          [
+            "IfcWindow",
+            30
+          ],
+          [
+            "IfcRelConnectsPathElements",
+            30
+          ],
+          [
+            "IfcColumnType",
+            29
+          ],
+          [
+            "IfcCovering",
+            26
+          ],
+          [
+            "IfcCoveringType",
+            26
+          ],
+          [
+            "IfcRelAggregates",
+            14
+          ],
+          [
+            "IfcSlab",
+            12
+          ],
+          [
+            "IfcWallStandardCase",
+            12
+          ],
+          [
+            "IfcStairFlight",
+            11
+          ],
+          [
+            "IfcWall",
+            11
+          ],
+          [
+            "IfcWallType",
+            11
+          ],
+          [
+            "IfcStair",
+            10
+          ],
+          [
+            "IfcWindowStyle",
+            10
+          ],
+          [
+            "IfcWindowLiningProperties",
+            10
+          ],
+          [
+            "IfcGrid",
+            9
+          ],
+          [
+            "IfcBuildingStorey",
+            9
+          ],
+          [
+            "IfcRelContainedInSpatialStructure",
+            9
+          ],
+          [
+            "IfcBuildingElementProxy",
+            8
+          ],
+          [
+            "IfcTypeProduct",
+            6
+          ],
+          [
+            "IfcBuildingElementProxyType",
+            6
+          ],
+          [
+            "IfcRelAssociatesClassification",
+            6
+          ],
+          [
+            "IfcDoor",
+            5
+          ],
+          [
+            "IfcDoorStyle",
+            4
+          ],
+          [
+            "IfcDoorLiningProperties",
+            4
+          ],
+          [
+            "IfcDoorPanelProperties",
+            4
+          ],
+          [
+            "IfcSlabType",
+            2
+          ],
+          [
+            "IfcStairFlightType",
+            2
+          ],
+          [
+            "IfcBuilding",
+            1
+          ],
+          [
+            "IfcSite",
+            1
+          ],
+          [
+            "IfcProject",
+            1
+          ]
+        ]
+      },
+      "pointcloud": {
+        "ply_path": "scene.ply",
+        "n_points": 246561,
+        "min_xyz": [
+          -52.77245330810547,
+          -40.347686767578125,
+          -16.049541473388672
+        ],
+        "max_xyz": [
+          31.589263916015625,
+          20.16172981262207,
+          0.2999970018863678
+        ],
+        "size_xyz": [
+          84.3617172241211,
+          60.50941467285156,
+          16.349538803100586
+        ],
+        "centroid_xyz": [
+          9.260330200195312,
+          7.067420482635498,
+          -7.187800407409668
+        ]
+      },
+      "trajectory_in_pc": {
+        "trajectory_inside_pointcloud_bbox": true,
+        "axis_overshoot_min_m": [
+          -53.91560387810547,
+          -35.313728327578126,
+          -6.638339993388671
+        ],
+        "axis_overshoot_max_m": [
+          -17.188660626015626,
+          -5.54962253262207,
+          -1.3995130318863678
+        ]
+      }
+    }
+  ]
+}
