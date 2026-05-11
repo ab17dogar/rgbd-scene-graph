@@ -1,18 +1,19 @@
 # RGB-D Scene Graph Generation with BIM/IFC Priors
 
-> **HiWi Challenge, MDS Lab, Universität Rostock.** Pipeline that turns an
-> egocentric RGB-D sequence and a building IFC prior into a 3D semantic
-> scene graph `G = (V, E)`, with object nodes from open-vocabulary detection
-> and structural priors from the IFC file.
+> **HiWi Challenge, MDS Lab, Universität Rostock.** This project implements a pipeline that transforms an
+> egocentric RGB-D sequence and a building Information Model (BIM/IFC) prior into a 3D semantic
+> scene graph $G = (V, E)$. The graph comprises object nodes $V_{obj}$ derived from open-vocabulary 
+> detection and structural nodes $V_{ifc}$ extracted from the IFC prior, linked by spatial and 
+> hierarchical edges $E$.
 
 This README is the primary deliverable. It documents *what the pipeline
 does, why each architectural choice was made, what the data forced us to
 change, and where the limits are*. The reasoning here is the core contribution of this work while the code in src/rgbdsg/ is graded but secondary in importance.
 
 ## Table of Contents
-- [1. Result at a glance](#1-result-at-a-glance): High-level overview of pipeline outputs, benchmarks, and performance metrics.
+- [1. Experimental Results & Performance](#1-experimental-results--performance): High-level overview of pipeline outputs, benchmarks, and performance metrics.
 - [2. Pipeline architecture](#2-pipeline-architecture): The core technical stages from raw data ingestion to scene graph construction.
-- [3. Methodology and justifications](#3-methodology-and-justifications): Detailed reasoning behind architectural decisions, coordinate conventions, and data fallbacks.
+- [3. Methodology and architectural justifications](#3-methodology-and-architectural-justifications): Detailed reasoning behind architectural decisions, coordinate conventions, and data fallbacks.
 - [4. Repository layout](#4-repository-layout): A guide to the codebase structure and module responsibilities.
 - [5. How to reproduce](#5-how-to-reproduce): Step-by-step instructions for running the pipeline locally using Make and Docker.
 - [6. Limitations and concrete failure modes](#6-limitations-and-concrete-failure-modes): Analysis of edge cases, hardware constraints, and geometric errors.
@@ -23,7 +24,7 @@ change, and where the limits are*. The reasoning here is the core contribution o
 
 ---
 
-## 1. Result at a glance
+## 1. Experimental Results & Performance
 
 The pipeline runs end-to-end on **both** datasets, every frame, with
 duplicate-object merging.
@@ -57,7 +58,7 @@ the BEV occupancy footprint that produced the room polygons:
 
 ![BasicHouse BEV scene graph](media/basichouse_bev.png)
 
-**Hierarchical tree view**: a 2D node-link diagram showing the semantic containment and object-to-object relationships (excluding fixtures for clarity):
+**Hierarchical tree view**: a 2D node-link diagram showing the semantic containment and object-to-object relationships (excluding structural entities (IFC) for clarity):
 
 ![BasicHouse hierarchical tree](media/basicHouse_with_pc_tree.png)
 
@@ -66,18 +67,18 @@ the BEV occupancy footprint that produced the room polygons:
 | Grounding DINO (5 keyframes) | ~5 s | 19 raw box detections |
 | SAM 2.1 video propagation (160 frames, stateful) | ~2 min | masks for all obj_ids over 160 frames |
 | Multi-view fusion + dedup (centroid + bbox + voxel-IoU) | ~3 s | **7 unique physical objects** (12 duplicates merged) |
-| **Canonical IfcOpenShell extraction** of `BasicHouse.ifc` | ~6 s | 125 fixtures, 2 storeys ("Floor 0", "Floor 1"), **8 door↔wall fills_opening_in pairs** |
+| **Canonical IfcOpenShell extraction** of `BasicHouse.ifc` | ~6 s | 125 structural entities (IFC), 2 storeys ("Floor 0", "Floor 1"), **8 door↔wall fills_opening_in pairs** |
 | **Wall-rasterised BEV rooms** (`IfcWall` faces + `IfcDoor` sealing) | <1 s | **5 room polygons** (11.2, 9.2, 12.3, 6.3, 3.5 m²) |
 | Graph construction (Armeni 4-layer + portals + spatial heuristics) | <1 s | **145 nodes, 271 edges** |
 | 3D scene-graph PNG + interactive Plotly HTML | ~2 s | `*_graph_3d.png` + `*_graph_3d.html` |
 | BEV-occupancy projection | ~1 s | `*_bev.png` |
 
-**Node breakdown:** 1 building · 2 storeys · 5 rooms · 7 objects · 125 IFC fixtures · 5 cameras (one per keyframe).
+**Node breakdown:** 1 building · 2 storeys · 5 rooms · 7 objects · 125 IFC structural entities · 5 cameras (one per keyframe).
 
 **Edge breakdown (271 total):**
-- Hierarchical containment (Building → Storey → Room → Object/Fixture/Camera): 163 `contains`
+- Hierarchical containment (Building → Storey → Room → Object/Entity/Camera): 163 `contains`
 - Object-level spatial heuristics (Task A): 21 `nearest` · 6 `near` · 6 `next_to` · 4 `aligned_with`
-- Object↔fixture portal relations: **8 `fills_opening_in`** (canonical IfcRelFillsElement→IfcRelVoidsElement) · **6 `connects`** (heuristic room-to-room portals via IfcDoor proximity)
+- Object↔entity portal relations: **8 `fills_opening_in`** (canonical IfcRelFillsElement→IfcRelVoidsElement) · **6 `connects`** (heuristic room-to-room portals via IfcDoor proximity)
 - Peer (sibling) relations per Armeni et al. [1]: 41 `same_room` (objects sharing a room) · 9 `same_storey` (objects sharing a storey)
 
 ### `synagoge_with_pc/` (383 frames, ~38 s, 10 fps, multi-storey 9-level synagogue)
@@ -95,16 +96,16 @@ the BEV occupancy footprint that produced the room polygons:
 | Grounding DINO (8 auto-spaced keyframes, scene prompt, lower thresholds) | ~8 s | 4 raw detections |
 | SAM 2.1 video propagation (383 × 2 sweeps, CPU offload + state reset) | ~28 min | masks over all 383 frames |
 | Multi-view fusion + dedup | ~5 s | **3 unique objects** |
-| **Canonical IfcOpenShell extraction** of `synagoge_final.ifc` | ~50 s | 250 fixtures, **9 named storeys** ("Level 1" through "Roof"), **5 door↔wall fills_opening_in pairs** |
+| **Canonical IfcOpenShell extraction** of `synagoge_final.ifc` | ~50 s | 250 structural entities (IFC), **9 named storeys** ("Level 1" through "Roof"), **5 door↔wall fills_opening_in pairs** |
 | Wall-rasterised BEV rooms | ~1 s | 2 room polygons (18.7 m², 70.6 m²) |
 | Graph construction (Armeni et al. [1] 4-layer + portals + spatial heuristics) | <1 s | **273 nodes, 392 edges** |
 | 3D scene-graph PNG + interactive Plotly HTML | ~2 s | `*_graph_3d.png` + `*_graph_3d.html` |
 | BEV-occupancy projection | ~1 s | `*_bev.png` |
 
-**Node breakdown:** 1 building · 9 storeys · 2 rooms · 3 objects · 250 IFC fixtures · 8 cameras. Storeys named exactly as Revit labelled them: *Level 1, Level 2, Parapeito, Level 3, vault Pilar profile, Smaller vaults, Roof edge, Higher Vaults, Roof*.
+**Node breakdown:** 1 building · 9 storeys · 2 rooms · 3 objects · 250 IFC structural entities · 8 cameras. Storeys named exactly as Revit labelled them: *Level 1, Level 2, Parapeito, Level 3, vault Pilar profile, Smaller vaults, Roof edge, Higher Vaults, Roof*.
 
 **Edge breakdown (392 total):**
-- Hierarchical containment: 381 `contains` (Building → Storey → Room/Object/Fixture/Camera; Room → Object)
+- Hierarchical containment: 381 `contains` (Building → Storey → Room/Object/Entity/Camera; Room → Object)
 - Object-level spatial heuristics: 6 `nearest`
 - IFC portal relations: **5 `fills_opening_in`**
 - Peer relations: 0 `same_room` / `same_storey` (objects are sparse, as only 3 were detected, spread across separate storeys)
@@ -113,7 +114,7 @@ The synagogue is a textureless flat-shaded synthetic render of a vaulted
 interior with almost no furniture, mostly architectural geometry. Grounding
 DINO finds few non-structural objects because there are few; the value of
 the pipeline on this scene is the **9-storey named hierarchy** with all
-250 fixtures correctly parented to their canonical IFC storey via
+250 structural entities (IFC) correctly parented to their canonical IFC storey via
 `IfcRelContainedInSpatialStructure`, the **5 canonical door↔wall portal
 relations**, and the camera-trajectory thread through the multi-storey
 graph.
@@ -171,7 +172,7 @@ flowchart TB
     IO1 -->|IfcSlab| ROOMS
 
     subgraph GRAPH["src/rgbdsg/graph/"]
-      G["NetworkX MultiDiGraph<br/>nodes: object | fixture | room<br/>edges: nearest, near, above, contains"]
+      G["NetworkX MultiDiGraph<br/>nodes: object | IFC entity | room<br/>edges: nearest, near, above, contains"]
     end
     F -->|ObjectInstance| G
     IO1 -->|IFCEntity| G
@@ -185,13 +186,13 @@ unit-testable (see `tests/`).
 
 The graph itself follows the canonical multi-layer 3D-scene-graph
 structure formalised in *3D Scene Graph* [1] and the per-node 3D properties used in
-*SceneGraphFusion* [3]; see §2.5 below for the schema.
+*SceneGraphFusion* [3]; see §2.1 below for the schema.
 
-### 2.5 The 3D semantic scene graph: Armeni / SceneGraphFusion schema
+### 2.1 Formal Graph Schema: Armeni / SceneGraphFusion
 
 The pipeline's canonical output is a NetworkX `MultiDiGraph` with **six
 node types** organised into the Armeni et al. [1] four-layer hierarchy plus a peer
-fixture layer and per-keyframe camera nodes:
+structural layer and per-keyframe camera nodes:
 
 ```
             ┌─────────────┐
@@ -204,18 +205,18 @@ fixture layer and per-keyframe camera nodes:
                    │ contains
         ┌──────────┼──────────┬────────────┬──────────┐
         ▼          ▼          ▼            ▼          ▼
-     room      object    ifc_fixture    camera    (other storey)
+     room      object    ifc_entity     camera    (other storey)
    (BEV poly)  (Task A)  (IfcDoor/                 (one per
    ┐ z range  ┐ from     IfcWall*/                 keyframe,
    │          │ GDINO +  IfcSlab/...                with pose)
    │          │ SAM 2    canonical)
-   └─ contains ─► object / ifc_fixture
+   └─ contains ─► object / ifc_entity
 ```
 
 Each node carries **3D properties** in the SceneGraphFusion sense, and
 the same ones Armeni et al. [1] per-element annotations specify:
 
-| Attribute | object | ifc_fixture | room | storey | camera |
+| Attribute | object | ifc_entity | room | storey | camera |
 |---|---|---|---|---|---|
 | `centroid` (xyz, m) | ✓ | ✓ | from polygon | mid-z | from pose translation |
 | `bbox_min`, `bbox_max` | ✓ | ✓ | polygon AABB | Z extents | — |
@@ -250,8 +251,8 @@ The edges fall into three families, all explicitly named:
 
 4. **Peer / sibling edges**: `same_room`, `same_storey`. Objects
    sharing a parent get a direct sibling link [1]. We
-   deliberately *exclude* fixture↔fixture sibling pairs from these
-   edges to avoid the O(N²) blow-up (125 fixtures per storey would emit
+   deliberately *exclude* entity↔entity sibling pairs from these
+   edges to avoid the O(N²) blow-up (125 entities per storey would emit
    ~7 700 redundant sibling edges; the `contains` chain already
    establishes co-storey membership).
 
@@ -267,7 +268,7 @@ The pipeline renders this graph in **three views**, in this order:
   view; it's a 2D projection, not a separate analysis.
 - **Hierarchical tree view** (`*_tree.png`): a 2D node-link diagram
   that explicitly visualises the parent-child containment hierarchy
-  and peer relationships. To maintain legibility, `ifc_fixture` and
+  and peer relationships. To maintain legibility, `ifc_entity` and
   `camera` nodes are excluded from this specific view.
 
 ### 2.6 Tree Visualization constraints and "messiness"
@@ -292,7 +293,7 @@ secondary edges.
 
 ---
 
-## 3. Methodology and justifications
+## 3. Methodology and architectural justifications
 
 The challenge brief says scientific reasoning is 50 % of the grade. Every
 non-obvious choice is documented here with the *alternatives I considered*
@@ -318,7 +319,7 @@ that's flagged explicitly.
 |---|---|
 | YOLO-World | Faster but materially worse on novel/indoor furniture categories. |
 | OWLv2 | Comparable quality but worse text-box alignment (`text_threshold` is brittler), and HuggingFace integration less mature. |
-| Closed-set detectors (e.g. Detic, COCO-trained) | Their vocabularies miss objects that exist in IFC fixtures (cabinet, sink, refrigerator); fine-tuning would consume the entire budget. |
+| Closed-set detectors (e.g. Detic, COCO-trained) | Their vocabularies miss objects that exist in IFC entities (cabinet, sink, refrigerator); fine-tuning would consume the entire budget. |
 | Original IDEA-Research repo | Builds a CUDA C++ extension from source, which can be a recipe for environment hell. The HF integration loads the same weights without the build step. |
 
 ### 3.2 Segmentation + multi-view association: SAM 2.1 in *video* mode
@@ -358,7 +359,7 @@ features as fp32 (see `_patch_sam2_bf16_storage_to_fp32` in
 [src/rgbdsg/detection/sam2_video.py](src/rgbdsg/detection/sam2_video.py).
 Memory cost: ~2× the memory bank size, which is negligible.
 
-### 3.3 IFC fixtures extraction via IfcOpenShell
+### 3.3 IFC structural entities extraction via IfcOpenShell
 
 The pipeline uses `IfcOpenShell` to programmatically extract spatial boundaries and connective portals from the `.ifc` file (`src/rgbdsg/ifc/from_ifc_file.py`).
 
@@ -580,7 +581,7 @@ through every PyTorch call.
 
 ---
 
-## 6. Limitations and concrete failure modes
+## 6. Analysis of limitations and failure modes
 
 The brief explicitly weighs honest limitation analysis. Here they are.
 
@@ -598,7 +599,7 @@ free-space map are real rooms, not corners.
 
 **Result on synagoge:** 2 rooms (18.7 m², 70.6 m²) on the populated
 storeys. Other storeys yield no rooms because the wall meshes have median
-Z outside the slab interval (median-Z gating prevents floor-to-ceiling
+Z outside the slab interval (median-Z gating) prevents floor-to-ceiling
 walls from being reused on slab-body intervals (explained below).
 
 **Median-Z gating subtlety.** A wall mesh that spans floor-to-ceiling has
@@ -666,9 +667,9 @@ implemented because the data didn't need them.
 ### 6.5 Multi-storey hierarchy: implemented but storey-room coverage is sparse
 
 The graph builder emits the full Armeni four-layer hierarchy: `Building →
-Storey → Room → Object / Fixture / Camera`, plus `same_storey` and
+Storey → Room → Object / Entity / Camera`, plus `same_storey` and
 `same_room` peer edges. On **BasicHouse** all 5 rooms, 7 objects, 125
-fixtures, and 5 cameras are correctly parented to 2 storeys. On
+structural entities, and 5 cameras are correctly parented to 2 storeys. On
 **synagoge** the 9 canonical IFC storeys are present, but only 2 of them
 contain BEV-synthesised rooms (the others lack wall meshes in the
 populated Z interval; see §6.1's median-Z gating note).
@@ -731,34 +732,31 @@ A version of this pipeline with the constraints lifted would look like:
 The choices above sit on a literature trail below; the README's reasoning is
 inspired by these even where we don't replicate them exactly.
 
-[1] I. Armeni et al., "3D Scene Graph: A Structure for Unified Semantics, 3D Space, and Camera," in *Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV)*, 2019, pp. 5664-5673. 
+[1] I. Armeni, Z. Y. He, J. Gwak, A. R. Zamir, and M. Fischer, "3D Scene Graph: A Structure for Unified Semantics, 3D Space, and Camera," in *Proc. IEEE/CVF Int. Conf. Comput. Vis. (ICCV)*, 2019, pp. 5664–5673.
 Available: https://arxiv.org/abs/1910.02527
 
-[2] G. Nithyanantham et al., "MCP4IFC: IFC-Based Building Design using Large Language Models," arXiv preprint arXiv:2511.05533, 2025.
+[2] B. K. Nithyanantham et al., "MCP4IFC: IFC-Based Building Design using Large Language Models," *arXiv preprint arXiv:2511.05533*, Nov. 2025.
 Available: https://arxiv.org/abs/2511.05533
 
-
-[3] S. Wu et al., "SceneGraphFusion: Incremental 3D Scene Graph Prediction from RGB-D Sequences," in *Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)*, 2021, pp. 7515-7525.
+[3] S. C. Wu, J. Wald, K. Tateno, N. Navab, and F. Tombari, "SceneGraphFusion: Incremental 3D Scene Graph Prediction from RGB-D Sequences," in *Proc. IEEE/CVF Conf. Comput. Vis. Pattern Recognit. (CVPR)*, 2021, pp. 7512–7522.
 Available: https://arxiv.org/abs/2103.14898
 
-
-[4] A. Papadakis and E. Spyrou, "A Multi-Modal Egocentric Activity Recognition Approach towards Video Domain Generalization," *Sensors*, vol. 24, no. 8, p. 2491, 2024.
+[4] A. Papadakis and E. Spyrou, "A Multi-Modal Egocentric Activity Recognition Approach towards Video Domain Generalization," *Sensors*, vol. 24, no. 8, Art. no. 2491, Apr. 2024.
 Available: https://doi.org/10.3390/s24082491
 
-[5] N. Hughes, Y. Chang, and L. Carlone, "Hydra: A Real-time Spatial Perception System for 3D Scene Graph Construction and Optimization," in *Robotics: Science and Systems (RSS)*, 2022.
+[5] N. Hughes, Y. Chang, and L. Carlone, "Hydra: A Real-time Spatial Perception System for 3D Scene Graph Construction and Optimization," in *Proc. Robotics: Science and Systems (RSS)*, 2022.
 Available: https://arxiv.org/abs/2201.13360
 
-[6] J. Gu et al., "ConceptGraphs: Open-Vocabulary 3D Scene Graphs for Perception and Planning," in *Proceedings of the IEEE International Conference on Robotics and Automation (ICRA)*, 2024.
+[6] Q. Gu et al., "ConceptGraphs: Open-Vocabulary 3D Scene Graphs for Perception and Planning," in *Proc. IEEE Int. Conf. Robot. Autom. (ICRA)*, 2024.
 Available: https://arxiv.org/abs/2309.16650
 
-[7] S. Liu et al., "Grounding DINO: Marrying DINO with Grounded Pre-Training for Open-Set Object Detection," arXiv preprint arXiv:2303.05499, 2023.
+[7] S. Liu et al., "Grounding DINO: Marrying DINO with Grounded Pre-Training for Open-Set Object Detection," in *Proc. Eur. Conf. Comput. Vis. (ECCV)*, 2024.
 Available: https://arxiv.org/abs/2303.05499
 
-[8] N. Ravi et al., "SAM 2: Segment Anything in Images and Videos," arXiv preprint arXiv:2408.00714, 2024.
+[8] N. Ravi et al., "SAM 2: Segment Anything in Images and Videos," in *Proc. Int. Conf. Learn. Represent. (ICLR)*, 2025.
 Available: https://arxiv.org/abs/2408.00714
 
-[9] buildingSMART International, "IfcOpenShell," 2024.
-Available: http://ifcopenshell.org
+[9] buildingSMART International, "IfcOpenShell," 2024. [Online]. Available: https://ifcopenshell.org (accessed May 12, 2026).
 
 ---
 
