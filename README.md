@@ -38,12 +38,12 @@ graph, plus the raw graph in GraphML + JSON:
 Object/Fixture/Camera) — every node and edge geometry-accurate in the
 world frame:
 
-![BasicHouse 3D semantic scene graph](docs/media/basichouse_graph_3d.png)
+![BasicHouse 3D semantic scene graph](outputs/basichouse/basichouse_graph_3d.png)
 
 **BEV-occupancy view** — the same NetworkX graph projected top-down onto
 the BEV occupancy footprint that produced the room polygons:
 
-![BasicHouse BEV scene graph](docs/media/basichouse_bev.png)
+![BasicHouse BEV scene graph](outputs/basichouse/basichouse_bev.png)
 
 | Pipeline stage | Wall-time on M3 Pro | Output |
 |---|---:|---|
@@ -66,9 +66,9 @@ the BEV occupancy footprint that produced the room polygons:
 
 ### `synagoge_with_pc/` (383 frames, ~38 s, 10 fps, multi-storey 9-level synagogue)
 
-![synagoge 3D semantic scene graph](docs/media/synagoge_graph_3d.png)
+![synagoge 3D semantic scene graph](outputs/synagoge/synagoge_graph_3d.png)
 
-![synagoge BEV scene graph](docs/media/synagoge_bev.png)
+![synagoge BEV scene graph](outputs/synagoge/synagoge_bev.png)
 
 | Pipeline stage | Wall-time on M3 Pro | Output |
 |---|---:|---|
