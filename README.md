@@ -722,7 +722,7 @@ A version of this pipeline with the constraints lifted would look like:
 The choices above sit on a literature trail; the README's reasoning is
 informed by these even where we don't replicate them exactly.
 
-[1] I. Armeni et al., "3D Scene Graph: A Structure for Unified Semantics, 3D Space, and Camera," in *Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV)*, 2019, pp. 5664-5673. [Online]. Available: https://arxiv.org/abs/1910.02520
+[1] I. Armeni et al., "3D Scene Graph: A Structure for Unified Semantics, 3D Space, and Camera," in *Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV)*, 2019, pp. 5664-5673. [Online]. Available: https://arxiv.org/abs/1910.02527
 *Defines the four-layer Building → Room → Object → Camera scene graph with per-node 3D attributes and inter-layer hierarchy edges + intra-layer sibling edges. Our graph implements exactly this structure: the `node_type ∈ {building, storey, room, object, ifc_fixture, camera}` layout and the `contains` / `same_storey` / `same_room` edges all follow Armeni's definitions, generalised one layer further with an explicit `storey` between building and room to handle multi-floor scenes.*
 
 [2] N. Hughes, Y. Chang, and L. Carlone, "Hydra: A Real-time Spatial Perception System for 3D Scene Graph Construction and Optimization," in *Robotics: Science and Systems (RSS)*, 2022. [Online]. Available: https://arxiv.org/abs/2201.13360
