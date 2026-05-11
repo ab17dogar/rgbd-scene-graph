@@ -728,7 +728,7 @@ informed by these even where we don't replicate them exactly.
 [2] N. Hughes, Y. Chang, and L. Carlone, "Hydra: A Real-time Spatial Perception System for 3D Scene Graph Construction and Optimization," in *Robotics: Science and Systems (RSS)*, 2022. [Online]. Available: https://arxiv.org/abs/2201.13360
 *Argues for a 3D scene graph rather than a metric map for robotics; inspiration for our object-only graph plus future hierarchical pass.*
 
-[3] S. Wu et al., "SceneGraphFusion: Incremental 3D Scene Graph Prediction from RGB-D Sequences," in *Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)*, 2021, pp. 7515-7525. [Online]. Available: https://arxiv.org/abs/2103.14813
+[3] S. Wu et al., "SceneGraphFusion: Incremental 3D Scene Graph Prediction from RGB-D Sequences," in *Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)*, 2021, pp. 7515-7525. [Online]. Available: https://arxiv.org/abs/2103.14898
 *The closest line of work to our pipeline: builds a 3D scene graph from a stream of RGB-D frames, with per-node 3D properties (centroid, std-dev, AABB, max length, volume) and predicate edges like `standing on` / `attached to` / `same part`. We adopt their node-attribute schema verbatim (volume_m3, max_length_m, bbox_size_m on every object and fixture) and replace their per-frame GNN with SAM 2's video predictor for object identity propagation, since SAM 2 solves the same multi-view-association problem without a trained model.*
 
 [4] A. Papadakis and E. Spyrou, "A Multi-Modal Egocentric Activity Recognition Approach towards Video Domain Generalization," *Sensors*, vol. 24, no. 8, p. 2491, 2024. [Online]. Available: https://doi.org/10.3390/s24082491
