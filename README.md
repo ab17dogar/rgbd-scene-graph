@@ -57,6 +57,10 @@ the BEV occupancy footprint that produced the room polygons:
 
 ![BasicHouse BEV scene graph](media/basichouse_bev.png)
 
+**Hierarchical tree view**: a 2D node-link diagram showing the semantic containment and object-to-object relationships (excluding fixtures for clarity):
+
+![BasicHouse hierarchical tree](media/basichouse_tree.png)
+
 | Pipeline stage | Wall-time | Output |
 |---|---:|---|
 | Grounding DINO (5 keyframes) | ~5 s | 19 raw box detections |
@@ -81,6 +85,10 @@ the BEV occupancy footprint that produced the room polygons:
 ![synagoge 3D semantic scene graph](media/synagoge_graph_3d.png)
 
 ![synagoge BEV scene graph](media/synagoge_bev.png)
+
+**Hierarchical tree view**:
+
+![synagoge hierarchical tree](media/synagoge_tree.png)
 
 | Pipeline stage | Wall-time | Output |
 |---|---:|---|
@@ -247,7 +255,7 @@ The edges fall into three families, all explicitly named:
    ~7 700 redundant sibling edges; the `contains` chain already
    establishes co-storey membership).
 
-The pipeline renders this graph in **two views**, in this order:
+The pipeline renders this graph in **three views**, in this order:
 
 - **3D view** (`*_graph_3d.png` + interactive `*_graph_3d.html`):
   every node placed at its world-frame 3D centroid; edges as colored
@@ -257,6 +265,30 @@ The pipeline renders this graph in **two views**, in this order:
   doors drawn as 2D rectangles and the camera trajectory as a
   polyline. The BEV view shares the NetworkX graph 1:1 with the 3D
   view; it's a 2D projection, not a separate analysis.
+- **Hierarchical tree view** (`*_tree.png`): a 2D node-link diagram
+  that explicitly visualises the parent-child containment hierarchy
+  and peer relationships. To maintain legibility, `ifc_fixture` and
+  `camera` nodes are excluded from this specific view.
+
+### 2.6 Tree Visualization constraints and "messiness"
+
+The hierarchical tree view is a 2D projection of a highly connected
+semantic graph. Mapping a non-planar scene graph (which includes
+both vertical containment and horizontal spatial heuristics) to a 
+static 2D layout is a known visualization challenge. 
+
+**Why it looks cluttered:**
+- **Horizontal Overlap**: Relationships like `nearest` and `next_to`
+  often cross the vertical `contains` lines, leading to a "messy"
+  appearance in dense scenes.
+- **Scale Disparity**: The number of objects varies significantly
+  across rooms, forcing the `multipartite_layout` to compress certain
+  branches.
+
+This view is intended as a logical debugging tool rather than a
+polished architectural diagram. It can be improved in future work
+through custom force-directed layouts or interactive pruning of
+secondary edges.
 
 ---
 

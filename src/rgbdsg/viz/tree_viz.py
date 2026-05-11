@@ -28,7 +28,15 @@ def render_tree_graph_png(
     nodes_to_keep = [n for n, d in G.nodes(data=True) if d.get("node_type") in keep_types]
     T = G.subgraph(nodes_to_keep).copy()
 
-    # 2. Assign layers for multipartite layout
+    # 2. Filter out cluttering edges (same_storey, same_room)
+    # These create O(N^2) horizontal edges that mess up the tree view.
+    edges_to_remove = [
+        (u, v, k) for u, v, k, d in T.edges(keys=True, data=True)
+        if d.get("relation") in ("same_storey", "same_room")
+    ]
+    T.remove_edges_from(edges_to_remove)
+
+    # 3. Assign layers for multipartite layout
     for n, d in T.nodes(data=True):
         nt = d.get("node_type")
         if nt == "building":
@@ -45,13 +53,13 @@ def render_tree_graph_png(
             layer = 5
         T.nodes[n]["layer"] = layer
 
-    # 3. Compute layout
+    # 4. Compute layout
     pos = nx.multipartite_layout(T, subset_key="layer", align='horizontal')
 
     fig, ax = plt.subplots(figsize=figsize, dpi=dpi)
     ax.set_title(title, fontsize=18, fontweight='bold')
 
-    # 4. Draw nodes
+    # 5. Draw nodes
     node_colors = {
         "building": "#2c3e50",
         "storey": "#8e44ad",
@@ -68,7 +76,7 @@ def render_tree_graph_png(
                                node_size=900 if nt in ("object", "camera") else 700, 
                                alpha=0.9, ax=ax, edgecolors="white", linewidths=1.5)
 
-    # 5. Draw edges
+    # 6. Draw edges
     edge_styles = {
         "contains": {"color": "#bdc3c7", "style": "solid", "alpha": 0.4},
         "connects": {"color": "#e74c3c", "style": "dashed", "alpha": 0.6},
@@ -88,7 +96,7 @@ def render_tree_graph_png(
                                style=style["style"], alpha=style["alpha"], 
                                arrows=True, arrowsize=15, ax=ax)
 
-    # 6. Draw labels for nodes
+    # 7. Draw labels for nodes
     node_labels = {}
     for n, d in T.nodes(data=True):
         nt = d.get("node_type")
@@ -106,30 +114,35 @@ def render_tree_graph_png(
     nx.draw_networkx_labels(T, pos, labels=node_labels, font_size=8, 
                             font_weight='bold', font_color='white', ax=ax)
 
-    # 7. Draw ALL edge labels from the data
+    # 8. Draw edge labels (selective and cleaned)
     edge_labels = {}
     for u, v, d in all_edges:
         rel = d.get("relation", "unknown")
+        
+        # OMIT "contains" labels because the tree hierarchy already makes it obvious.
+        if rel == "contains":
+            continue
+            
         # Include weight (distance) for spatial relationships if present
         weight = d.get("weight")
         if weight is not None and rel in ["nearest", "near", "next_to"]:
-            label = f"{rel}\n({weight:.2f}m)"
+            label = f"{rel} ({weight:.2f}m)"
         else:
             label = rel
         edge_labels[(u, v)] = label
 
-    nx.draw_networkx_edge_labels(T, pos, edge_labels=edge_labels, font_size=6, 
-                                 alpha=0.8, rotate=False, label_pos=0.6, ax=ax,
-                                 bbox=dict(facecolor='white', edgecolor='none', alpha=0.6, pad=0.5))
+    nx.draw_networkx_edge_labels(T, pos, edge_labels=edge_labels, font_size=7, 
+                                 alpha=0.8, rotate=False, label_pos=0.5, ax=ax,
+                                 bbox=dict(facecolor='white', edgecolor='none', alpha=0.7, pad=0.5))
 
-    # 8. Legend
+    # 9. Legend
     from matplotlib.lines import Line2D
     legend_elements = [
         Line2D([0], [0], color=s["color"], linestyle=s["style"], label=rel)
         for rel, s in edge_styles.items() if any(d.get("relation") == rel for _, _, d in all_edges)
     ]
     if legend_elements:
-        ax.legend(handles=legend_elements, loc='lower right', title="Relationship Types", fontsize=8)
+        ax.legend(handles=legend_elements, loc='lower right', title="Relationship Types", fontsize=9)
 
     ax.axis("off")
     plt.tight_layout()

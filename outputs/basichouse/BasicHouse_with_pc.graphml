@@ -43,106 +43,61 @@
       <data key="d0">object</data>
       <data key="d2">chair</data>
       <data key="d3">4</data>
-      <data key="d4">[11.090164184570312, 1.7607944011688232, -0.6260091662406921]</data>
-      <data key="d5">[2.9124481678009033, -1.0527963638305664, -1.837352991104126]</data>
-      <data key="d6">[14.470182418823242, 4.211879730224609, -0.001640927861444652]</data>
-      <data key="d7">[11.557734489440918, 5.264676094055176, 1.8357120752334595]</data>
-      <data key="d8">111.69891357421875</data>
-      <data key="d9">11.557734489440918</data>
-      <data key="d10">[2.385751247406006, 1.2578679323196411, 0.38010087609291077]</data>
-      <data key="d11">197</data>
+      <data key="d4">[11.35066032409668, 1.618970513343811, -0.6393391489982605]</data>
+      <data key="d5">[-3.565031051635742, -1.9465233087539673, -2.0977816581726074]</data>
+      <data key="d6">[14.471317291259766, 4.208509922027588, -0.0014244290068745613]</data>
+      <data key="d7">[18.036348342895508, 6.155033111572266, 2.0963573455810547]</data>
+      <data key="d8">232.72569274902344</data>
+      <data key="d9">18.036348342895508</data>
+      <data key="d10">[2.5383059978485107, 1.237440586090088, 0.38357222080230713]</data>
+      <data key="d11">333</data>
       <data key="d12">50000</data>
-      <data key="d13">0.3792545895286018</data>
+      <data key="d13">0.3657493722868395</data>
     </node>
     <node id="obj:5">
       <data key="d0">object</data>
       <data key="d2">chair</data>
       <data key="d3">5</data>
-      <data key="d4">[3.8463528156280518, 1.8740378618240356, -0.1660432666540146]</data>
-      <data key="d5">[-1.7745294570922852, -1.8469761610031128, -0.9819781184196472]</data>
-      <data key="d6">[8.97632884979248, 4.202784061431885, -0.0009996902663260698]</data>
-      <data key="d7">[10.750858306884766, 6.049760341644287, 0.9809784293174744]</data>
-      <data key="d8">63.80295181274414</data>
-      <data key="d9">10.750858306884766</data>
-      <data key="d10">[1.4987298250198364, 0.6387251019477844, 0.2297002524137497]</data>
-      <data key="d11">62</data>
+      <data key="d4">[3.2397334575653076, 1.9404009580612183, -0.2666988670825958]</data>
+      <data key="d5">[-2.095235824584961, -1.0539360046386719, -0.929114818572998]</data>
+      <data key="d6">[7.624001979827881, 3.6083667278289795, -0.0013507629046216607]</data>
+      <data key="d7">[9.71923828125, 4.6623029708862305, 0.9277640581130981]</data>
+      <data key="d8">42.040733337402344</data>
+      <data key="d9">9.71923828125</data>
+      <data key="d10">[1.4934865236282349, 0.6110436320304871, 0.2828710079193115]</data>
+      <data key="d11">93</data>
       <data key="d12">50000</data>
-      <data key="d13">0.3562155000625118</data>
+      <data key="d13">0.34682294758417276</data>
     </node>
     <node id="obj:6">
       <data key="d0">object</data>
       <data key="d2">table</data>
       <data key="d3">6</data>
-      <data key="d4">[6.5675835609436035, 1.937150478363037, -0.5547894835472107]</data>
-      <data key="d5">[1.1465487480163574, -1.0165685415267944, -1.8241119384765625]</data>
-      <data key="d6">[14.472341537475586, 4.2201409339904785, -0.0015634153969585896]</data>
-      <data key="d7">[13.32579231262207, 5.2367095947265625, 1.822548508644104]</data>
-      <data key="d8">127.18345642089844</data>
-      <data key="d9">13.32579231262207</data>
-      <data key="d10">[3.750119686126709, 0.9929578304290771, 0.21453233063220978]</data>
-      <data key="d11">61</data>
+      <data key="d4">[7.743164539337158, 1.9849587678909302, -0.5581988096237183]</data>
+      <data key="d5">[2.012708902359009, -1.0168410539627075, -1.8230221271514893]</data>
+      <data key="d6">[14.469738960266113, 3.538874864578247, -0.0012592690763995051]</data>
+      <data key="d7">[12.457030296325684, 4.555716037750244, 1.8217628002166748]</data>
+      <data key="d8">103.38630676269531</data>
+      <data key="d9">12.457030296325684</data>
+      <data key="d10">[4.006317615509033, 1.0413094758987427, 0.23710155487060547]</data>
+      <data key="d11">81</data>
       <data key="d12">50000</data>
-      <data key="d13">0.3834891226447997</data>
-    </node>
-    <node id="obj:8">
-      <data key="d0">object</data>
-      <data key="d2">chair</data>
-      <data key="d3">8</data>
-      <data key="d4">[12.285882949829102, -0.05193651467561722, -0.8223851323127747]</data>
-      <data key="d5">[10.706663131713867, -0.43974828720092773, -1.8361228704452515]</data>
-      <data key="d6">[14.307547569274902, 0.22656022012233734, -0.0036850739270448685]</data>
-      <data key="d7">[3.600884437561035, 0.6663085073232651, 1.8324377965182066]</data>
-      <data key="d8">4.3965678854085954</data>
-      <data key="d9">3.600884437561035</data>
-      <data key="d10">[0.8289868235588074, 0.18442147970199585, 0.5388525724411011]</data>
-      <data key="d11">13</data>
-      <data key="d12">50000</data>
-      <data key="d13">0.32755619287490845</data>
+      <data key="d13">0.3835075229038427</data>
     </node>
     <node id="obj:9">
       <data key="d0">object</data>
       <data key="d2">chair</data>
       <data key="d3">9</data>
-      <data key="d4">[4.783505439758301, 1.9973419904708862, -0.6497687101364136]</data>
-      <data key="d5">[4.245373249053955, 1.5893634557724, -0.8103674054145813]</data>
-      <data key="d6">[5.522979736328125, 2.3444998264312744, -0.002092324662953615]</data>
-      <data key="d7">[1.27760648727417, 0.7551363706588745, 0.8082750807516277]</data>
-      <data key="d8">0.7797972266179504</data>
-      <data key="d9">1.27760648727417</data>
-      <data key="d10">[0.044112831354141235, 0.12843672931194305, 0.09954915195703506]</data>
-      <data key="d11">12</data>
+      <data key="d4">[4.4368462562561035, 2.240248918533325, -0.6554515361785889]</data>
+      <data key="d5">[2.920330286026001, 1.1174625158309937, -0.8102916479110718]</data>
+      <data key="d6">[6.044232368469238, 2.8905584812164307, -0.0017478079535067081]</data>
+      <data key="d7">[3.1239020824432373, 1.773095965385437, 0.808543860912323]</data>
+      <data key="d8">4.478506565093994</data>
+      <data key="d9">3.1239020824432373</data>
+      <data key="d10">[0.7131915092468262, 0.45097213983535767, 0.10193503648042679]</data>
+      <data key="d11">51</data>
       <data key="d12">50000</data>
-      <data key="d13">0.5497729182243347</data>
-    </node>
-    <node id="obj:11">
-      <data key="d0">object</data>
-      <data key="d2">chair</data>
-      <data key="d3">11</data>
-      <data key="d4">[4.791394233703613, 2.6755270957946777, -0.667069137096405]</data>
-      <data key="d5">[4.580350875854492, 2.456282377243042, -0.8104754686355591]</data>
-      <data key="d6">[4.849061012268066, 2.8901896476745605, -0.4386599063873291]</data>
-      <data key="d7">[0.2687101364135742, 0.43390727043151855, 0.37181556224823]</data>
-      <data key="d8">0.0433519402685527</data>
-      <data key="d9">0.43390727043151855</data>
-      <data key="d10">[0.011393941007554531, 0.12794120609760284, 0.08612656593322754]</data>
-      <data key="d11">13</data>
-      <data key="d12">50000</data>
-      <data key="d13">0.5014395117759705</data>
-    </node>
-    <node id="obj:12">
-      <data key="d0">object</data>
-      <data key="d2">chair</data>
-      <data key="d3">12</data>
-      <data key="d4">[4.789482116699219, 1.3757702112197876, -0.6600001454353333]</data>
-      <data key="d5">[4.585509300231934, 1.093033790588379, -0.8104782700538635]</data>
-      <data key="d6">[5.821101665496826, 1.5500305891036987, -0.0034016796853393316]</data>
-      <data key="d7">[1.2355923652648926, 0.4569967985153198, 0.8070765903685242]</data>
-      <data key="d8">0.45572528409511626</data>
-      <data key="d9">1.2355923652648926</data>
-      <data key="d10">[0.019047478213906288, 0.1224774569272995, 0.0891341120004654]</data>
-      <data key="d11">8</data>
-      <data key="d12">30650</data>
-      <data key="d13">0.45178839564323425</data>
+      <data key="d13">0.5087111732539009</data>
     </node>
     <node id="obj:14">
       <data key="d0">object</data>
@@ -163,59 +118,44 @@
       <data key="d0">object</data>
       <data key="d2">chair</data>
       <data key="d3">15</data>
-      <data key="d4">[9.462605476379395, 1.7366870641708374, -0.36602240800857544]</data>
-      <data key="d5">[9.305290222167969, 0.48195168375968933, -0.6321787238121033]</data>
-      <data key="d6">[10.957489013671875, 2.062810182571411, -0.0018553544068709016]</data>
-      <data key="d7">[1.6521987915039062, 1.5808584988117218, 0.6303233694052324]</data>
-      <data key="d8">1.6463368819281743</data>
-      <data key="d9">1.6521987915039062</data>
-      <data key="d10">[0.23864129185676575, 0.3057113289833069, 0.15374678373336792]</data>
+      <data key="d4">[9.462959289550781, 1.7313556671142578, -0.368585467338562]</data>
+      <data key="d5">[9.305830001831055, 0.2757384181022644, -0.6455093026161194]</data>
+      <data key="d6">[11.162759780883789, 2.06291127204895, -0.0019672722555696964]</data>
+      <data key="d7">[1.8569297790527344, 1.7871728539466858, 0.6435420303605497]</data>
+      <data key="d8">2.1356936503669903</data>
+      <data key="d9">1.8569297790527344</data>
+      <data key="d10">[0.2417467087507248, 0.3072451055049896, 0.1555512547492981]</data>
       <data key="d11">28</data>
       <data key="d12">50000</data>
       <data key="d13">0.3561880588531494</data>
-    </node>
-    <node id="obj:16">
-      <data key="d0">object</data>
-      <data key="d2">table</data>
-      <data key="d3">16</data>
-      <data key="d4">[11.874848365783691, 1.6460628509521484, -0.5311205387115479]</data>
-      <data key="d5">[9.356727600097656, 0.2732759416103363, -0.7720937728881836]</data>
-      <data key="d6">[13.827347755432129, 2.570436477661133, -0.0031711768824607134]</data>
-      <data key="d7">[4.470620155334473, 2.2971605360507965, 0.7689225960057229]</data>
-      <data key="d8">7.896629137746513</data>
-      <data key="d9">4.470620155334473</data>
-      <data key="d10">[0.9320271015167236, 0.32042741775512695, 0.19011244177818298]</data>
-      <data key="d11">45</data>
-      <data key="d12">50000</data>
-      <data key="d13">0.33878564834594727</data>
     </node>
     <node id="obj:17">
       <data key="d0">object</data>
       <data key="d2">table</data>
       <data key="d3">17</data>
-      <data key="d4">[1.1148641109466553, 1.9785212278366089, -0.5531265735626221]</data>
-      <data key="d5">[-3.568021535873413, -2.613147497177124, -2.1793463230133057]</data>
-      <data key="d6">[10.425411224365234, 4.2222371101379395, -0.0011207872303202748]</data>
-      <data key="d7">[13.993432998657227, 6.835384368896484, 2.178225517272949]</data>
-      <data key="d8">208.3483428955078</data>
-      <data key="d9">13.993432998657227</data>
-      <data key="d10">[2.868957042694092, 1.0571348667144775, 0.2783868610858917]</data>
-      <data key="d11">111</data>
+      <data key="d4">[2.108980417251587, 1.9814202785491943, -0.5915920734405518]</data>
+      <data key="d5">[-3.572550058364868, -2.6459109783172607, -1.7997606992721558]</data>
+      <data key="d6">[14.471813201904297, 4.220372676849365, -0.0011527258902788162]</data>
+      <data key="d7">[18.044363021850586, 6.866283416748047, 1.7986079454421997]</data>
+      <data key="d8">222.84341430664062</data>
+      <data key="d9">18.044363021850586</data>
+      <data key="d10">[4.665823459625244, 0.9607807397842407, 0.26687905192375183]</data>
+      <data key="d11">189</data>
       <data key="d12">50000</data>
-      <data key="d13">0.4132806747346311</data>
+      <data key="d13">0.3811022076341841</data>
     </node>
     <node id="obj:18">
       <data key="d0">object</data>
       <data key="d2">door</data>
       <data key="d3">18</data>
-      <data key="d4">[2.4453468322753906, 3.846212863922119, -1.1588058471679688]</data>
-      <data key="d5">[-0.26497745513916016, 1.7424193620681763, -2.622744560241699]</data>
-      <data key="d6">[7.2867231369018555, 4.22629451751709, -0.001982335466891527]</data>
-      <data key="d7">[7.551700592041016, 2.4838751554489136, 2.6207622247748077]</data>
-      <data key="d8">49.158898899832515</data>
-      <data key="d9">7.551700592041016</data>
-      <data key="d10">[1.3365446329116821, 0.2436254918575287, 0.4552137553691864]</data>
-      <data key="d11">73</data>
+      <data key="d4">[1.8320151567459106, 3.740355968475342, -1.1496855020523071]</data>
+      <data key="d5">[0.84736168384552, 3.5562405586242676, -1.83622145652771]</data>
+      <data key="d6">[3.216278553009033, 4.225880146026611, -0.0029935939237475395]</data>
+      <data key="d7">[2.368916869163513, 0.6696395874023438, 1.8332278626039624]</data>
+      <data key="d8">2.9080869668563114</data>
+      <data key="d9">2.368916869163513</data>
+      <data key="d10">[0.40012499690055847, 0.1714392602443695, 0.4201592206954956]</data>
+      <data key="d11">68</data>
       <data key="d12">50000</data>
       <data key="d13">0.3058169484138489</data>
     </node>
@@ -1826,69 +1766,40 @@
       <data key="d30">contains</data>
       <data key="d31">0.0</data>
     </edge>
-    <edge source="obj:4" target="obj:16" id="0">
-      <data key="d30">nearest</data>
-      <data key="d31">0.7986841957219367</data>
-    </edge>
-    <edge source="obj:4" target="obj:16" id="1">
-      <data key="d30">near</data>
-      <data key="d31">0.7986841957219367</data>
-    </edge>
-    <edge source="obj:4" target="obj:16" id="2">
-      <data key="d30">next_to</data>
-      <data key="d31">0.7930274855650542</data>
-    </edge>
-    <edge source="obj:4" target="obj:16" id="3">
-      <data key="d30">aligned_with</data>
-      <data key="d32">x</data>
-      <data key="d31">0.7986841957219367</data>
-    </edge>
-    <edge source="obj:4" target="obj:16" id="4">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
     <edge source="obj:4" target="obj:15" id="0">
       <data key="d30">nearest</data>
-      <data key="d31">1.6483693841979925</data>
+      <data key="d31">1.910328028048048</data>
     </edge>
     <edge source="obj:4" target="obj:15" id="1">
       <data key="d30">near</data>
-      <data key="d31">1.6483693841979925</data>
+      <data key="d31">1.910328028048048</data>
     </edge>
     <edge source="obj:4" target="obj:15" id="2">
       <data key="d30">aligned_with</data>
       <data key="d32">x</data>
-      <data key="d31">1.6483693841979925</data>
+      <data key="d31">1.910328028048048</data>
     </edge>
     <edge source="obj:4" target="obj:15" id="3">
       <data key="d30">same_storey</data>
       <data key="d31">0.0</data>
     </edge>
-    <edge source="obj:4" target="obj:8" id="0">
-      <data key="d30">nearest</data>
-      <data key="d31">2.180435795638333</data>
-    </edge>
-    <edge source="obj:4" target="obj:8" id="1">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
-    <edge source="obj:4" target="obj:5" id="0">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
     <edge source="obj:4" target="obj:6" id="0">
+      <data key="d30">nearest</data>
+      <data key="d31">3.6269211452963765</data>
+    </edge>
+    <edge source="obj:4" target="obj:6" id="1">
       <data key="d30">same_storey</data>
       <data key="d31">0.0</data>
     </edge>
     <edge source="obj:4" target="obj:9" id="0">
+      <data key="d30">nearest</data>
+      <data key="d31">6.941690819277802</data>
+    </edge>
+    <edge source="obj:4" target="obj:9" id="1">
       <data key="d30">same_storey</data>
       <data key="d31">0.0</data>
     </edge>
-    <edge source="obj:4" target="obj:11" id="0">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
-    <edge source="obj:4" target="obj:12" id="0">
+    <edge source="obj:4" target="obj:5" id="0">
       <data key="d30">same_storey</data>
       <data key="d31">0.0</data>
     </edge>
@@ -1904,82 +1815,65 @@
       <data key="d30">same_storey</data>
       <data key="d31">0.0</data>
     </edge>
+    <edge source="obj:5" target="obj:14" id="0">
+      <data key="d30">nearest</data>
+      <data key="d31">0.9471141401688185</data>
+    </edge>
+    <edge source="obj:5" target="obj:14" id="1">
+      <data key="d30">near</data>
+      <data key="d31">0.9471141401688185</data>
+    </edge>
+    <edge source="obj:5" target="obj:14" id="2">
+      <data key="d30">next_to</data>
+      <data key="d31">0.8051634599480505</data>
+    </edge>
+    <edge source="obj:5" target="obj:14" id="3">
+      <data key="d30">same_storey</data>
+      <data key="d31">0.0</data>
+    </edge>
+    <edge source="obj:5" target="obj:17" id="0">
+      <data key="d30">nearest</data>
+      <data key="d31">1.1772173199412126</data>
+    </edge>
+    <edge source="obj:5" target="obj:17" id="1">
+      <data key="d30">near</data>
+      <data key="d31">1.1772173199412126</data>
+    </edge>
+    <edge source="obj:5" target="obj:17" id="2">
+      <data key="d30">next_to</data>
+      <data key="d31">1.1314968063728763</data>
+    </edge>
+    <edge source="obj:5" target="obj:17" id="3">
+      <data key="d30">aligned_with</data>
+      <data key="d32">x</data>
+      <data key="d31">1.1772173199412126</data>
+    </edge>
+    <edge source="obj:5" target="obj:17" id="4">
+      <data key="d30">same_storey</data>
+      <data key="d31">0.0</data>
+    </edge>
     <edge source="obj:5" target="obj:9" id="0">
       <data key="d30">nearest</data>
-      <data key="d31">1.0618141333245732</data>
+      <data key="d31">1.2938765358092907</data>
     </edge>
     <edge source="obj:5" target="obj:9" id="1">
       <data key="d30">near</data>
-      <data key="d31">1.0618141333245732</data>
+      <data key="d31">1.2938765358092907</data>
     </edge>
     <edge source="obj:5" target="obj:9" id="2">
       <data key="d30">next_to</data>
-      <data key="d31">0.9452295747888821</data>
+      <data key="d31">1.2340939397746802</data>
     </edge>
     <edge source="obj:5" target="obj:9" id="3">
       <data key="d30">aligned_with</data>
       <data key="d32">x</data>
-      <data key="d31">1.0618141333245732</data>
+      <data key="d31">1.2938765358092907</data>
     </edge>
     <edge source="obj:5" target="obj:9" id="4">
       <data key="d30">same_storey</data>
       <data key="d31">0.0</data>
     </edge>
-    <edge source="obj:5" target="obj:12" id="0">
-      <data key="d30">nearest</data>
-      <data key="d31">1.1754815729193917</data>
-    </edge>
-    <edge source="obj:5" target="obj:12" id="1">
-      <data key="d30">near</data>
-      <data key="d31">1.1754815729193917</data>
-    </edge>
-    <edge source="obj:5" target="obj:12" id="2">
-      <data key="d30">next_to</data>
-      <data key="d31">1.066659988083206</data>
-    </edge>
-    <edge source="obj:5" target="obj:12" id="3">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
-    <edge source="obj:5" target="obj:11" id="0">
-      <data key="d30">nearest</data>
-      <data key="d31">1.3366058494940347</data>
-    </edge>
-    <edge source="obj:5" target="obj:11" id="1">
-      <data key="d30">near</data>
-      <data key="d31">1.3366058494940347</data>
-    </edge>
-    <edge source="obj:5" target="obj:11" id="2">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
-    <edge source="obj:5" target="obj:14" id="0">
-      <data key="d30">near</data>
-      <data key="d31">1.358448374508819</data>
-    </edge>
-    <edge source="obj:5" target="obj:14" id="1">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
     <edge source="obj:5" target="obj:6" id="0">
-      <data key="d30">aligned_with</data>
-      <data key="d32">x</data>
-      <data key="d31">2.7495824397107653</data>
-    </edge>
-    <edge source="obj:5" target="obj:6" id="1">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
-    <edge source="obj:5" target="obj:17" id="0">
-      <data key="d30">aligned_with</data>
-      <data key="d32">x</data>
-      <data key="d31">2.760757288148068</data>
-    </edge>
-    <edge source="obj:5" target="obj:17" id="1">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
-    <edge source="obj:5" target="obj:8" id="0">
       <data key="d30">same_storey</data>
       <data key="d31">0.0</data>
     </edge>
@@ -1987,78 +1881,45 @@
       <data key="d30">same_storey</data>
       <data key="d31">0.0</data>
     </edge>
-    <edge source="obj:5" target="obj:16" id="0">
+    <edge source="obj:5" target="obj:18" id="0">
       <data key="d30">same_storey</data>
       <data key="d31">0.0</data>
     </edge>
-    <edge source="obj:5" target="obj:18" id="0">
+    <edge source="obj:6" target="obj:15" id="0">
+      <data key="d30">nearest</data>
+      <data key="d31">1.7487028721765252</data>
+    </edge>
+    <edge source="obj:6" target="obj:15" id="1">
+      <data key="d30">near</data>
+      <data key="d31">1.7487028721765252</data>
+    </edge>
+    <edge source="obj:6" target="obj:15" id="2">
+      <data key="d30">aligned_with</data>
+      <data key="d32">x</data>
+      <data key="d31">1.7487028721765252</data>
+    </edge>
+    <edge source="obj:6" target="obj:15" id="3">
       <data key="d30">same_storey</data>
       <data key="d31">0.0</data>
     </edge>
     <edge source="obj:6" target="obj:9" id="0">
       <data key="d30">nearest</data>
-      <data key="d31">1.7876181958419959</data>
+      <data key="d31">3.3175852276728968</data>
     </edge>
     <edge source="obj:6" target="obj:9" id="1">
-      <data key="d30">near</data>
-      <data key="d31">1.7876181958419959</data>
+      <data key="d30">aligned_with</data>
+      <data key="d32">x</data>
+      <data key="d31">3.3175852276728968</data>
     </edge>
     <edge source="obj:6" target="obj:9" id="2">
-      <data key="d30">aligned_with</data>
-      <data key="d32">x</data>
-      <data key="d31">1.7876181958419959</data>
-    </edge>
-    <edge source="obj:6" target="obj:9" id="3">
       <data key="d30">same_storey</data>
       <data key="d31">0.0</data>
     </edge>
-    <edge source="obj:6" target="obj:12" id="0">
+    <edge source="obj:6" target="obj:4" id="0">
       <data key="d30">nearest</data>
-      <data key="d31">1.8675818144693768</data>
-    </edge>
-    <edge source="obj:6" target="obj:12" id="1">
-      <data key="d30">near</data>
-      <data key="d31">1.8675818144693768</data>
-    </edge>
-    <edge source="obj:6" target="obj:12" id="2">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
-    <edge source="obj:6" target="obj:11" id="0">
-      <data key="d30">nearest</data>
-      <data key="d31">1.9268251804385803</data>
-    </edge>
-    <edge source="obj:6" target="obj:11" id="1">
-      <data key="d30">near</data>
-      <data key="d31">1.9268251804385803</data>
-    </edge>
-    <edge source="obj:6" target="obj:11" id="2">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
-    <edge source="obj:6" target="obj:5" id="0">
-      <data key="d30">aligned_with</data>
-      <data key="d32">x</data>
-      <data key="d31">2.7495824397107653</data>
-    </edge>
-    <edge source="obj:6" target="obj:15" id="0">
-      <data key="d30">aligned_with</data>
-      <data key="d32">x</data>
-      <data key="d31">2.9080870826181457</data>
-    </edge>
-    <edge source="obj:6" target="obj:15" id="1">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
-    <edge source="obj:6" target="obj:8" id="0">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
+      <data key="d31">3.6269211452963765</data>
     </edge>
     <edge source="obj:6" target="obj:14" id="0">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
-    <edge source="obj:6" target="obj:16" id="0">
       <data key="d30">same_storey</data>
       <data key="d31">0.0</data>
     </edge>
@@ -2070,136 +1931,50 @@
       <data key="d30">same_storey</data>
       <data key="d31">0.0</data>
     </edge>
-    <edge source="obj:8" target="obj:16" id="0">
-      <data key="d30">nearest</data>
-      <data key="d31">1.7711539567297265</data>
-    </edge>
-    <edge source="obj:8" target="obj:16" id="1">
-      <data key="d30">near</data>
-      <data key="d31">1.7711539567297265</data>
-    </edge>
-    <edge source="obj:8" target="obj:16" id="2">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
-    <edge source="obj:8" target="obj:4" id="0">
-      <data key="d30">nearest</data>
-      <data key="d31">2.180435795638333</data>
-    </edge>
-    <edge source="obj:8" target="obj:15" id="0">
-      <data key="d30">nearest</data>
-      <data key="d31">3.3731790546943117</data>
-    </edge>
-    <edge source="obj:8" target="obj:15" id="1">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
-    <edge source="obj:8" target="obj:9" id="0">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
-    <edge source="obj:8" target="obj:11" id="0">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
-    <edge source="obj:8" target="obj:12" id="0">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
-    <edge source="obj:8" target="obj:14" id="0">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
-    <edge source="obj:8" target="obj:17" id="0">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
-    <edge source="obj:8" target="obj:18" id="0">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
-    <edge source="obj:9" target="obj:12" id="0">
-      <data key="d30">nearest</data>
-      <data key="d31">0.6216847108437753</data>
-    </edge>
-    <edge source="obj:9" target="obj:12" id="1">
-      <data key="d30">near</data>
-      <data key="d31">0.6216847108437753</data>
-    </edge>
-    <edge source="obj:9" target="obj:12" id="2">
-      <data key="d30">next_to</data>
-      <data key="d31">0.6216005127319576</data>
-    </edge>
-    <edge source="obj:9" target="obj:12" id="3">
-      <data key="d30">aligned_with</data>
-      <data key="d32">y</data>
-      <data key="d31">0.6216847108437753</data>
-    </edge>
-    <edge source="obj:9" target="obj:12" id="4">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
-    <edge source="obj:9" target="obj:11" id="0">
-      <data key="d30">nearest</data>
-      <data key="d31">0.6784516010195213</data>
-    </edge>
-    <edge source="obj:9" target="obj:11" id="1">
-      <data key="d30">near</data>
-      <data key="d31">0.6784516010195213</data>
-    </edge>
-    <edge source="obj:9" target="obj:11" id="2">
-      <data key="d30">next_to</data>
-      <data key="d31">0.6782309858395986</data>
-    </edge>
-    <edge source="obj:9" target="obj:11" id="3">
-      <data key="d30">aligned_with</data>
-      <data key="d32">y</data>
-      <data key="d31">0.6784516010195213</data>
-    </edge>
-    <edge source="obj:9" target="obj:11" id="4">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
     <edge source="obj:9" target="obj:5" id="0">
       <data key="d30">nearest</data>
-      <data key="d31">1.0618141333245732</data>
+      <data key="d31">1.2938765358092907</data>
     </edge>
     <edge source="obj:9" target="obj:5" id="1">
       <data key="d30">next_to</data>
-      <data key="d31">0.9452295747888821</data>
+      <data key="d31">1.2340939397746802</data>
     </edge>
     <edge source="obj:9" target="obj:5" id="2">
       <data key="d30">aligned_with</data>
       <data key="d32">x</data>
-      <data key="d31">1.0618141333245732</data>
+      <data key="d31">1.2938765358092907</data>
     </edge>
     <edge source="obj:9" target="obj:14" id="0">
-      <data key="d30">near</data>
-      <data key="d31">1.9737023027260876</data>
+      <data key="d30">nearest</data>
+      <data key="d31">1.56804348821845</data>
     </edge>
     <edge source="obj:9" target="obj:14" id="1">
+      <data key="d30">near</data>
+      <data key="d31">1.56804348821845</data>
+    </edge>
+    <edge source="obj:9" target="obj:14" id="2">
+      <data key="d30">same_storey</data>
+      <data key="d31">0.0</data>
+    </edge>
+    <edge source="obj:9" target="obj:17" id="0">
+      <data key="d30">nearest</data>
+      <data key="d31">2.3430812321089998</data>
+    </edge>
+    <edge source="obj:9" target="obj:17" id="1">
+      <data key="d30">aligned_with</data>
+      <data key="d32">x</data>
+      <data key="d31">2.3430812321089998</data>
+    </edge>
+    <edge source="obj:9" target="obj:17" id="2">
       <data key="d30">same_storey</data>
       <data key="d31">0.0</data>
     </edge>
     <edge source="obj:9" target="obj:6" id="0">
       <data key="d30">aligned_with</data>
       <data key="d32">x</data>
-      <data key="d31">1.7876181958419959</data>
-    </edge>
-    <edge source="obj:9" target="obj:17" id="0">
-      <data key="d30">aligned_with</data>
-      <data key="d32">x</data>
-      <data key="d31">3.6699622781620738</data>
-    </edge>
-    <edge source="obj:9" target="obj:17" id="1">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
+      <data key="d31">3.3175852276728968</data>
     </edge>
     <edge source="obj:9" target="obj:15" id="0">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
-    <edge source="obj:9" target="obj:16" id="0">
       <data key="d30">same_storey</data>
       <data key="d31">0.0</data>
     </edge>
@@ -2207,161 +1982,39 @@
       <data key="d30">same_storey</data>
       <data key="d31">0.0</data>
     </edge>
-    <edge source="obj:11" target="obj:9" id="0">
-      <data key="d30">nearest</data>
-      <data key="d31">0.6784516010195213</data>
-    </edge>
-    <edge source="obj:11" target="obj:9" id="1">
-      <data key="d30">next_to</data>
-      <data key="d31">0.6782309858395986</data>
-    </edge>
-    <edge source="obj:11" target="obj:9" id="2">
-      <data key="d30">aligned_with</data>
-      <data key="d32">y</data>
-      <data key="d31">0.6784516010195213</data>
-    </edge>
-    <edge source="obj:11" target="obj:12" id="0">
-      <data key="d30">nearest</data>
-      <data key="d31">1.2997775139747445</data>
-    </edge>
-    <edge source="obj:11" target="obj:12" id="1">
-      <data key="d30">near</data>
-      <data key="d31">1.2997775139747445</data>
-    </edge>
-    <edge source="obj:11" target="obj:12" id="2">
-      <data key="d30">next_to</data>
-      <data key="d31">1.299758291064636</data>
-    </edge>
-    <edge source="obj:11" target="obj:12" id="3">
-      <data key="d30">aligned_with</data>
-      <data key="d32">y</data>
-      <data key="d31">1.2997775139747445</data>
-    </edge>
-    <edge source="obj:11" target="obj:12" id="4">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
-    <edge source="obj:11" target="obj:5" id="0">
-      <data key="d30">nearest</data>
-      <data key="d31">1.3366058494940347</data>
-    </edge>
-    <edge source="obj:11" target="obj:14" id="0">
-      <data key="d30">near</data>
-      <data key="d31">1.8562778199112844</data>
-    </edge>
-    <edge source="obj:11" target="obj:14" id="1">
-      <data key="d30">aligned_with</data>
-      <data key="d32">x</data>
-      <data key="d31">1.8562778199112844</data>
-    </edge>
-    <edge source="obj:11" target="obj:14" id="2">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
-    <edge source="obj:11" target="obj:15" id="0">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
-    <edge source="obj:11" target="obj:16" id="0">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
-    <edge source="obj:11" target="obj:17" id="0">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
-    <edge source="obj:11" target="obj:18" id="0">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
-    <edge source="obj:12" target="obj:9" id="0">
-      <data key="d30">nearest</data>
-      <data key="d31">0.6216847108437753</data>
-    </edge>
-    <edge source="obj:12" target="obj:9" id="1">
-      <data key="d30">next_to</data>
-      <data key="d31">0.6216005127319576</data>
-    </edge>
-    <edge source="obj:12" target="obj:9" id="2">
-      <data key="d30">aligned_with</data>
-      <data key="d32">y</data>
-      <data key="d31">0.6216847108437753</data>
-    </edge>
-    <edge source="obj:12" target="obj:5" id="0">
-      <data key="d30">nearest</data>
-      <data key="d31">1.1754815729193917</data>
-    </edge>
-    <edge source="obj:12" target="obj:5" id="1">
-      <data key="d30">next_to</data>
-      <data key="d31">1.066659988083206</data>
-    </edge>
-    <edge source="obj:12" target="obj:11" id="0">
-      <data key="d30">nearest</data>
-      <data key="d31">1.2997775139747445</data>
-    </edge>
-    <edge source="obj:12" target="obj:11" id="1">
-      <data key="d30">next_to</data>
-      <data key="d31">1.299758291064636</data>
-    </edge>
-    <edge source="obj:12" target="obj:11" id="2">
-      <data key="d30">aligned_with</data>
-      <data key="d32">y</data>
-      <data key="d31">1.2997775139747445</data>
-    </edge>
-    <edge source="obj:12" target="obj:14" id="0">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
-    <edge source="obj:12" target="obj:15" id="0">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
-    <edge source="obj:12" target="obj:16" id="0">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
-    <edge source="obj:12" target="obj:17" id="0">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
-    <edge source="obj:12" target="obj:18" id="0">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
-    <edge source="obj:14" target="obj:18" id="0">
-      <data key="d30">nearest</data>
-      <data key="d31">1.3196467756109602</data>
-    </edge>
-    <edge source="obj:14" target="obj:18" id="1">
-      <data key="d30">near</data>
-      <data key="d31">1.3196467756109602</data>
-    </edge>
-    <edge source="obj:14" target="obj:18" id="2">
-      <data key="d30">next_to</data>
-      <data key="d31">1.2596532899296677</data>
-    </edge>
-    <edge source="obj:14" target="obj:18" id="3">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
     <edge source="obj:14" target="obj:5" id="0">
       <data key="d30">nearest</data>
-      <data key="d31">1.358448374508819</data>
+      <data key="d31">0.9471141401688185</data>
     </edge>
-    <edge source="obj:14" target="obj:11" id="0">
-      <data key="d30">nearest</data>
-      <data key="d31">1.8562778199112844</data>
-    </edge>
-    <edge source="obj:14" target="obj:11" id="1">
-      <data key="d30">aligned_with</data>
-      <data key="d32">x</data>
-      <data key="d31">1.8562778199112844</data>
+    <edge source="obj:14" target="obj:5" id="1">
+      <data key="d30">next_to</data>
+      <data key="d31">0.8051634599480505</data>
     </edge>
     <edge source="obj:14" target="obj:17" id="0">
-      <data key="d30">near</data>
-      <data key="d31">1.9671467971375078</data>
+      <data key="d30">nearest</data>
+      <data key="d31">1.10210872565856</data>
     </edge>
     <edge source="obj:14" target="obj:17" id="1">
+      <data key="d30">near</data>
+      <data key="d31">1.10210872565856</data>
+    </edge>
+    <edge source="obj:14" target="obj:17" id="2">
+      <data key="d30">next_to</data>
+      <data key="d31">1.0883117823303248</data>
+    </edge>
+    <edge source="obj:14" target="obj:17" id="3">
+      <data key="d30">same_storey</data>
+      <data key="d31">0.0</data>
+    </edge>
+    <edge source="obj:14" target="obj:9" id="0">
+      <data key="d30">nearest</data>
+      <data key="d31">1.56804348821845</data>
+    </edge>
+    <edge source="obj:14" target="obj:18" id="0">
+      <data key="d30">near</data>
+      <data key="d31">1.574901588851966</data>
+    </edge>
+    <edge source="obj:14" target="obj:18" id="1">
       <data key="d30">same_storey</data>
       <data key="d31">0.0</data>
     </edge>
@@ -2369,40 +2022,27 @@
       <data key="d30">same_storey</data>
       <data key="d31">0.0</data>
     </edge>
-    <edge source="obj:14" target="obj:16" id="0">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
-    <edge source="obj:15" target="obj:4" id="0">
-      <data key="d30">nearest</data>
-      <data key="d31">1.6483693841979925</data>
-    </edge>
-    <edge source="obj:15" target="obj:4" id="1">
-      <data key="d30">aligned_with</data>
-      <data key="d32">x</data>
-      <data key="d31">1.6483693841979925</data>
-    </edge>
-    <edge source="obj:15" target="obj:16" id="0">
-      <data key="d30">nearest</data>
-      <data key="d31">2.419583827492801</data>
-    </edge>
-    <edge source="obj:15" target="obj:16" id="1">
-      <data key="d30">aligned_with</data>
-      <data key="d32">x</data>
-      <data key="d31">2.419583827492801</data>
-    </edge>
-    <edge source="obj:15" target="obj:16" id="2">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
     <edge source="obj:15" target="obj:6" id="0">
       <data key="d30">nearest</data>
-      <data key="d31">2.9080870826181457</data>
+      <data key="d31">1.7487028721765252</data>
     </edge>
     <edge source="obj:15" target="obj:6" id="1">
       <data key="d30">aligned_with</data>
       <data key="d32">x</data>
-      <data key="d31">2.9080870826181457</data>
+      <data key="d31">1.7487028721765252</data>
+    </edge>
+    <edge source="obj:15" target="obj:4" id="0">
+      <data key="d30">nearest</data>
+      <data key="d31">1.910328028048048</data>
+    </edge>
+    <edge source="obj:15" target="obj:4" id="1">
+      <data key="d30">aligned_with</data>
+      <data key="d32">x</data>
+      <data key="d31">1.910328028048048</data>
+    </edge>
+    <edge source="obj:15" target="obj:9" id="0">
+      <data key="d30">nearest</data>
+      <data key="d31">5.059948290866838</data>
     </edge>
     <edge source="obj:15" target="obj:17" id="0">
       <data key="d30">same_storey</data>
@@ -2412,81 +2052,65 @@
       <data key="d30">same_storey</data>
       <data key="d31">0.0</data>
     </edge>
-    <edge source="obj:16" target="obj:4" id="0">
-      <data key="d30">nearest</data>
-      <data key="d31">0.7986841957219367</data>
-    </edge>
-    <edge source="obj:16" target="obj:4" id="1">
-      <data key="d30">next_to</data>
-      <data key="d31">0.7930274855650542</data>
-    </edge>
-    <edge source="obj:16" target="obj:4" id="2">
-      <data key="d30">aligned_with</data>
-      <data key="d32">x</data>
-      <data key="d31">0.7986841957219367</data>
-    </edge>
-    <edge source="obj:16" target="obj:8" id="0">
-      <data key="d30">nearest</data>
-      <data key="d31">1.7711539567297265</data>
-    </edge>
-    <edge source="obj:16" target="obj:15" id="0">
-      <data key="d30">nearest</data>
-      <data key="d31">2.419583827492801</data>
-    </edge>
-    <edge source="obj:16" target="obj:15" id="1">
-      <data key="d30">aligned_with</data>
-      <data key="d32">x</data>
-      <data key="d31">2.419583827492801</data>
-    </edge>
-    <edge source="obj:16" target="obj:17" id="0">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
-    <edge source="obj:16" target="obj:18" id="0">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
     <edge source="obj:17" target="obj:14" id="0">
       <data key="d30">nearest</data>
-      <data key="d31">1.9671467971375078</data>
+      <data key="d31">1.10210872565856</data>
     </edge>
-    <edge source="obj:17" target="obj:18" id="0">
-      <data key="d30">nearest</data>
-      <data key="d31">2.371772270209176</data>
-    </edge>
-    <edge source="obj:17" target="obj:18" id="1">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
+    <edge source="obj:17" target="obj:14" id="1">
+      <data key="d30">next_to</data>
+      <data key="d31">1.0883117823303248</data>
     </edge>
     <edge source="obj:17" target="obj:5" id="0">
       <data key="d30">nearest</data>
-      <data key="d31">2.760757288148068</data>
+      <data key="d31">1.1772173199412126</data>
     </edge>
     <edge source="obj:17" target="obj:5" id="1">
+      <data key="d30">next_to</data>
+      <data key="d31">1.1314968063728763</data>
+    </edge>
+    <edge source="obj:17" target="obj:5" id="2">
       <data key="d30">aligned_with</data>
       <data key="d32">x</data>
-      <data key="d31">2.760757288148068</data>
+      <data key="d31">1.1772173199412126</data>
+    </edge>
+    <edge source="obj:17" target="obj:18" id="0">
+      <data key="d30">nearest</data>
+      <data key="d31">1.8660205764895985</data>
+    </edge>
+    <edge source="obj:17" target="obj:18" id="1">
+      <data key="d30">near</data>
+      <data key="d31">1.8660205764895985</data>
+    </edge>
+    <edge source="obj:17" target="obj:18" id="2">
+      <data key="d30">aligned_with</data>
+      <data key="d32">y</data>
+      <data key="d31">1.8660205764895985</data>
+    </edge>
+    <edge source="obj:17" target="obj:18" id="3">
+      <data key="d30">same_storey</data>
+      <data key="d31">0.0</data>
     </edge>
     <edge source="obj:17" target="obj:9" id="0">
       <data key="d30">aligned_with</data>
       <data key="d32">x</data>
-      <data key="d31">3.6699622781620738</data>
+      <data key="d31">2.3430812321089998</data>
     </edge>
     <edge source="obj:18" target="obj:14" id="0">
       <data key="d30">nearest</data>
-      <data key="d31">1.3196467756109602</data>
-    </edge>
-    <edge source="obj:18" target="obj:14" id="1">
-      <data key="d30">next_to</data>
-      <data key="d31">1.2596532899296677</data>
+      <data key="d31">1.574901588851966</data>
     </edge>
     <edge source="obj:18" target="obj:17" id="0">
       <data key="d30">nearest</data>
-      <data key="d31">2.371772270209176</data>
+      <data key="d31">1.8660205764895985</data>
+    </edge>
+    <edge source="obj:18" target="obj:17" id="1">
+      <data key="d30">aligned_with</data>
+      <data key="d32">y</data>
+      <data key="d31">1.8660205764895985</data>
     </edge>
     <edge source="obj:18" target="obj:5" id="0">
       <data key="d30">nearest</data>
-      <data key="d31">2.614932034596551</data>
+      <data key="d31">2.449729424142979</data>
     </edge>
     <edge source="ifc:2DedXznHnDaeAWsrTB_qBb" target="ifc:2DedXznHnDaeAWsrTB_qBj" id="0">
       <data key="d30">fills_opening_in</data>
@@ -2587,19 +2211,7 @@
       <data key="d30">same_storey</data>
       <data key="d31">0.0</data>
     </edge>
-    <edge source="room:1" target="obj:8" id="0">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
     <edge source="room:1" target="obj:9" id="0">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
-    <edge source="room:1" target="obj:11" id="0">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
-    <edge source="room:1" target="obj:12" id="0">
       <data key="d30">same_storey</data>
       <data key="d31">0.0</data>
     </edge>
@@ -2608,10 +2220,6 @@
       <data key="d31">0.0</data>
     </edge>
     <edge source="room:1" target="obj:15" id="0">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
-    <edge source="room:1" target="obj:16" id="0">
       <data key="d30">same_storey</data>
       <data key="d31">0.0</data>
     </edge>
@@ -2652,19 +2260,7 @@
       <data key="d30">same_storey</data>
       <data key="d31">0.0</data>
     </edge>
-    <edge source="room:2" target="obj:8" id="0">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
     <edge source="room:2" target="obj:9" id="0">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
-    <edge source="room:2" target="obj:11" id="0">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
-    <edge source="room:2" target="obj:12" id="0">
       <data key="d30">same_storey</data>
       <data key="d31">0.0</data>
     </edge>
@@ -2673,10 +2269,6 @@
       <data key="d31">0.0</data>
     </edge>
     <edge source="room:2" target="obj:15" id="0">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
-    <edge source="room:2" target="obj:16" id="0">
       <data key="d30">same_storey</data>
       <data key="d31">0.0</data>
     </edge>
@@ -2728,19 +2320,7 @@
       <data key="d30">same_storey</data>
       <data key="d31">0.0</data>
     </edge>
-    <edge source="room:3" target="obj:8" id="0">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
     <edge source="room:3" target="obj:9" id="0">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
-    <edge source="room:3" target="obj:11" id="0">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
-    <edge source="room:3" target="obj:12" id="0">
       <data key="d30">same_storey</data>
       <data key="d31">0.0</data>
     </edge>
@@ -2749,10 +2329,6 @@
       <data key="d31">0.0</data>
     </edge>
     <edge source="room:3" target="obj:15" id="0">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
-    <edge source="room:3" target="obj:16" id="0">
       <data key="d30">same_storey</data>
       <data key="d31">0.0</data>
     </edge>
@@ -2788,19 +2364,7 @@
       <data key="d30">same_storey</data>
       <data key="d31">0.0</data>
     </edge>
-    <edge source="room:4" target="obj:8" id="0">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
     <edge source="room:4" target="obj:9" id="0">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
-    <edge source="room:4" target="obj:11" id="0">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
-    <edge source="room:4" target="obj:12" id="0">
       <data key="d30">same_storey</data>
       <data key="d31">0.0</data>
     </edge>
@@ -2809,10 +2373,6 @@
       <data key="d31">0.0</data>
     </edge>
     <edge source="room:4" target="obj:15" id="0">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
-    <edge source="room:4" target="obj:16" id="0">
       <data key="d30">same_storey</data>
       <data key="d31">0.0</data>
     </edge>
@@ -2870,19 +2430,7 @@
       <data key="d30">same_storey</data>
       <data key="d31">0.0</data>
     </edge>
-    <edge source="room:5" target="obj:8" id="0">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
     <edge source="room:5" target="obj:9" id="0">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
-    <edge source="room:5" target="obj:11" id="0">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
-    <edge source="room:5" target="obj:12" id="0">
       <data key="d30">same_storey</data>
       <data key="d31">0.0</data>
     </edge>
@@ -2891,10 +2439,6 @@
       <data key="d31">0.0</data>
     </edge>
     <edge source="room:5" target="obj:15" id="0">
-      <data key="d30">same_storey</data>
-      <data key="d31">0.0</data>
-    </edge>
-    <edge source="room:5" target="obj:16" id="0">
       <data key="d30">same_storey</data>
       <data key="d31">0.0</data>
     </edge>
@@ -2938,19 +2482,7 @@
       <data key="d30">contains</data>
       <data key="d31">0.0</data>
     </edge>
-    <edge source="storey:0" target="obj:8" id="0">
-      <data key="d30">contains</data>
-      <data key="d31">0.0</data>
-    </edge>
     <edge source="storey:0" target="obj:9" id="0">
-      <data key="d30">contains</data>
-      <data key="d31">0.0</data>
-    </edge>
-    <edge source="storey:0" target="obj:11" id="0">
-      <data key="d30">contains</data>
-      <data key="d31">0.0</data>
-    </edge>
-    <edge source="storey:0" target="obj:12" id="0">
       <data key="d30">contains</data>
       <data key="d31">0.0</data>
     </edge>
@@ -2959,10 +2491,6 @@
       <data key="d31">0.0</data>
     </edge>
     <edge source="storey:0" target="obj:15" id="0">
-      <data key="d30">contains</data>
-      <data key="d31">0.0</data>
-    </edge>
-    <edge source="storey:0" target="obj:16" id="0">
       <data key="d30">contains</data>
       <data key="d31">0.0</data>
     </edge>

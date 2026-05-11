@@ -23,7 +23,7 @@ run-basichouse:
 	@echo "Running pipeline on BasicHouse (local)..."
 	.venv/bin/python scripts/run_pipeline.py \
 		--scene data/BasicHouse_with_pc \
-		--device cuda \
+		--device auto \
 		--keyframes 0 40 80 120 159 \
 		--max_per_frame 8 \
 		--out outputs/basichouse
@@ -32,7 +32,7 @@ run-synagoge:
 	@echo "Running pipeline on synagoge (local)..."
 	.venv/bin/python scripts/run_pipeline.py \
 		--scene data/synagoge_with_pc \
-		--device cuda \
+		--device auto \
 		--auto_keyframes 8 \
 		--out outputs/synagoge
 
