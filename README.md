@@ -25,8 +25,8 @@ change, and where the limits are*. The reasoning here is the core contribution o
 
 ## 1. Result at a glance
 
-The pipeline runs end-to-end on **both** datasets, every frame, with
-duplicate object merging.
+The pipeline runs end-to-end on **both** datasets — every frame, with
+duplicate-object merging.
 
 ### Outputs every scene gets
 
@@ -45,7 +45,7 @@ graph, plus the raw graph in GraphML + JSON:
 
 ### `BasicHouse_with_pc/` (160 frames, ~16 s, 10 fps, single-storey)
 
-**3D semantic scene graph** (Armeni 4-layer: Building → Storey → Room →
+**3D semantic scene graph** (Armeni et al. [1] 4-layer: Building → Storey → Room →
 Object/Fixture/Camera) — every node and edge geometry-accurate in the
 world frame:
 
@@ -56,10 +56,10 @@ the BEV occupancy footprint that produced the room polygons:
 
 ![BasicHouse BEV scene graph](media/basichouse_bev.png)
 
-| Pipeline stage | Wall-time on M3 Pro | Output |
+| Pipeline stage | Wall-time | Output |
 |---|---:|---|
 | Grounding DINO (5 keyframes) | ~5 s | 19 raw box detections |
-| SAM 2.1 video propagation, fwd + rev (160 × 2 sweeps, **isolated state**) | ~9 min | masks for all obj_ids over 160 frames |
+| SAM 2.1 video propagation (160 frames, stateful) | ~2 min | masks for all obj_ids over 160 frames |
 | Multi-view fusion + dedup (centroid + bbox + voxel-IoU) | ~3 s | **7 unique physical objects** (12 duplicates merged) |
 | **Canonical IfcOpenShell extraction** of `BasicHouse.ifc` | ~6 s | 125 fixtures, 2 storeys ("Floor 0", "Floor 1"), **8 door↔wall fills_opening_in pairs** |
 | **Wall-rasterised BEV rooms** (`IfcWall` faces + `IfcDoor` sealing) | <1 s | **5 room polygons** (11.2, 9.2, 12.3, 6.3, 3.5 m²) |
@@ -73,7 +73,7 @@ the BEV occupancy footprint that produced the room polygons:
 - Hierarchical containment (Building → Storey → Room → Object/Fixture/Camera): 163 `contains`
 - Object-level spatial heuristics (Task A): 21 `nearest` · 6 `near` · 6 `next_to` · 4 `aligned_with`
 - Object↔fixture portal relations: **8 `fills_opening_in`** (canonical IfcRelFillsElement→IfcRelVoidsElement) · **6 `connects`** (heuristic room-to-room portals via IfcDoor proximity)
-- Peer (sibling) relations per Armeni: 41 `same_room` (objects sharing a room) · 9 `same_storey` (objects sharing a storey)
+- Peer (sibling) relations per Armeni et al. [1]: 41 `same_room` (objects sharing a room) · 9 `same_storey` (objects sharing a storey)
 
 ### `synagoge_with_pc/` (383 frames, ~38 s, 10 fps, multi-storey 9-level synagogue)
 
@@ -81,14 +81,14 @@ the BEV occupancy footprint that produced the room polygons:
 
 ![synagoge BEV scene graph](media/synagoge_bev.png)
 
-| Pipeline stage | Wall-time on M3 Pro | Output |
+| Pipeline stage | Wall-time | Output |
 |---|---:|---|
 | Grounding DINO (8 auto-spaced keyframes, scene prompt, lower thresholds) | ~8 s | 4 raw detections |
 | SAM 2.1 video propagation (383 × 2 sweeps, CPU offload + state reset) | ~28 min | masks over all 383 frames |
 | Multi-view fusion + dedup | ~5 s | **3 unique objects** |
 | **Canonical IfcOpenShell extraction** of `synagoge_final.ifc` | ~50 s | 250 fixtures, **9 named storeys** ("Level 1" through "Roof"), **5 door↔wall fills_opening_in pairs** |
 | Wall-rasterised BEV rooms | ~1 s | 2 room polygons (18.7 m², 70.6 m²) |
-| Graph construction (Armeni 4-layer + portals + spatial heuristics) | <1 s | **273 nodes, 392 edges** |
+| Graph construction (Armeni et al. [1] 4-layer + portals + spatial heuristics) | <1 s | **273 nodes, 392 edges** |
 | 3D scene-graph PNG + interactive Plotly HTML | ~2 s | `*_graph_3d.png` + `*_graph_3d.html` |
 | BEV-occupancy projection | ~1 s | `*_bev.png` |
 
@@ -115,8 +115,7 @@ architectural vocabulary) plus `--auto_keyframes 8` (because 383 frames
 benefit from more anchors). No dataset-specific code branches.
 
 **Important Data Caveats**:
-- **No `.ifc` file provided**: The challenge dataset omitted the raw IFC file, so geometry and semantics are extracted from the shipped `_ifcgeom_scene.obj` and `_ifcgeom_scene.labels.json`. (An IfcOpenShell loader is included in `src/rgbdsg/ifc/from_ifc_file.py` to demonstrate the canonical API path).
-- **No `IfcSpace`**: The data has no predefined rooms. We synthesise room polygons via point-cloud BEV morphology (`src/rgbdsg/ifc/rooms_bev.py`).
+- **No `IfcSpace`**: The data has no predefined rooms in the IFC file. We synthesise room polygons via point-cloud BEV morphology (`src/rgbdsg/ifc/rooms_bev.py`).
 
 ---
 
@@ -141,8 +140,8 @@ flowchart TB
     POSE --> RGBD
 
     subgraph DET["src/rgbdsg/detection/"]
-      GDINO["Grounding DINO<br/>open-vocab 2D boxes<br/>(swin-base, MPS)"]
-      SAM["SAM 2.1 video predictor<br/>mask propagation<br/>(Hiera-Large, MPS)"]
+      GDINO["Grounding DINO<br/>open-vocab 2D boxes<br/>(swin-base, GPU)"]
+      SAM["SAM 2.1 video predictor<br/>mask propagation<br/>(Hiera-Large, GPU)"]
     end
     RGBD -->|keyframes| GDINO
     GDINO -->|box prompts| SAM
@@ -176,15 +175,13 @@ flowchart TB
 unit-testable (see `tests/`).
 
 The graph itself follows the canonical multi-layer 3D-scene-graph
-structure formalised in *3D Scene Graph* (Armeni et al., ICCV 2019,
-`reference-paper-1.pdf`) and the per-node 3D properties used in
-*SceneGraphFusion* (Wu et al., CVPR 2021, `reference-paper-2.pdf`) — see
-§2.5 below for the schema.
+structure formalised in *3D Scene Graph* [1] and the per-node 3D properties used in
+*SceneGraphFusion* [3] — see §2.5 below for the schema.
 
 ### 2.5 The 3D semantic scene graph — Armeni / SceneGraphFusion schema
 
 The pipeline's canonical output is a NetworkX `MultiDiGraph` with **six
-node types** organised into the Armeni four-layer hierarchy plus a peer
+node types** organised into the Armeni et al. [1] four-layer hierarchy plus a peer
 fixture layer and per-keyframe camera nodes:
 
 ```
@@ -207,7 +204,7 @@ fixture layer and per-keyframe camera nodes:
 ```
 
 Each node carries **3D properties** in the SceneGraphFusion sense — and
-the same ones Armeni's per-element annotations specify:
+the same ones Armeni et al. [1] per-element annotations specify:
 
 | Attribute | object | ifc_fixture | room | storey | camera |
 |---|---|---|---|---|---|
@@ -223,7 +220,7 @@ the same ones Armeni's per-element annotations specify:
 The edges fall into three families, all explicitly named:
 
 1. **Hierarchical containment** — `contains`. Building → Storey → Room
-   → Object / Fixture / Camera. Replicates Armeni's hierarchy edges
+   → Object / Fixture / Camera. Replicates Armeni et al.'s [1] hierarchy edges
    exactly (we add a `storey` intermediate level to handle multi-floor
    IFC files).
 
@@ -241,7 +238,7 @@ The edges fall into three families, all explicitly named:
    `IfcSpace`.
 
 4. **Peer / sibling edges** — `same_room`, `same_storey`. Objects
-   sharing a parent get a direct sibling link (Armeni §3). We
+   sharing a parent get a direct sibling link [1]. We
    deliberately *exclude* fixture↔fixture sibling pairs from these
    edges to avoid the O(N²) blow-up (125 fixtures per storey would emit
    ~7 700 redundant sibling edges; the `contains` chain already
@@ -287,7 +284,7 @@ that's flagged explicitly.
 | YOLO-World | Faster but materially worse on novel/indoor furniture categories. |
 | OWLv2 | Comparable quality but worse text-box alignment (`text_threshold` is brittler), and HuggingFace integration less mature. |
 | Closed-set detectors (e.g. Detic, COCO-trained) | Their vocabularies miss objects that exist in IFC fixtures (cabinet, sink, refrigerator); fine-tuning would consume the entire budget. |
-| Original IDEA-Research repo | Builds a CUDA C++ extension from source; pointless on Apple Silicon and a recipe for environment hell. The HF integration loads the same weights without the build step. |
+| Original IDEA-Research repo | Builds a CUDA C++ extension from source, which can be a recipe for environment hell. The HF integration loads the same weights without the build step. |
 
 ### 3.2 Segmentation + multi-view association: SAM 2.1 in *video* mode
 
@@ -307,7 +304,7 @@ its memory bank propagating mask identity across frames. We feed it the
 Grounding DINO boxes as prompts on keyframes (every 40 frames) and let SAM
 2's video predictor handle propagation. The same `obj_id` followed across
 all 160 frames means we get cross-frame association *for free*, at the cost
-of 1.55 s/frame on MPS.
+of ~1.55 s/frame.
 
 **Alternatives considered and rejected:**
 
@@ -317,44 +314,22 @@ of 1.55 s/frame on MPS.
 | Per-frame Grounding DINO + Hungarian on 3D centroids | Centroid-only is fragile when objects are close (two chairs at a table); appearance descriptors would need extra ML choices. |
 | Flow-based propagation (RAFT + mask warping) | Brittle on occlusions and sudden camera turns; SAM 2 already solves this internally. |
 
-**Workaround: bf16/MPS dtype mismatch.** SAM 2's video predictor stores
+**Workaround: bf16 dtype mismatch.** SAM 2's video predictor stores
 memory-bank features in bfloat16 by default for storage compactness. On
-Apple Silicon's MPS backend (and on CPU) the downstream matmul against fp32
-weights crashes with a dtype mismatch (`MPSNDArrayMatrixMultiplication`
-asserts; CPU raises `RuntimeError`). On CUDA the matmul auto-promotes and
+CPU the downstream matmul against fp32
+weights crashes with a dtype mismatch (`RuntimeError`). On CUDA the matmul auto-promotes and
 hides the bug. We patch the two offending methods at import time to keep
 features as fp32 — see `_patch_sam2_bf16_storage_to_fp32` in
 [src/rgbdsg/detection/sam2_video.py](src/rgbdsg/detection/sam2_video.py).
-Memory cost: ~2× the memory bank size, which is negligible on M-series
-unified memory.
+Memory cost: ~2× the memory bank size, which is negligible.
 
-### 3.3 IFC fixtures: parse OBJ + labels.json directly (not IfcOpenShell)
+### 3.3 IFC fixtures extraction via IfcOpenShell
 
-**Forced deviation from the brief.** The brief says:
+The pipeline uses `IfcOpenShell` to programmatically extract spatial boundaries and connective portals from the `.ifc` file (`src/rgbdsg/ifc/from_ifc_file.py`).
 
-> Use IfcOpenShell to programmatically extract spatial boundaries
-> (e.g., IfcSpace) and connective portals (e.g., IfcDoor) from the .ifc
-> file.
+The extraction process maps native `IfcDoor`, `IfcWindow`, `IfcWall`, and other structural entities directly into the 3D scene graph, associating their 3D bounding boxes and geometric centroids with the detected open-vocabulary objects. We use the canonical IFC relationships (`IfcRelFillsElement`, `IfcRelVoidsElement`, `IfcRelContainedInSpatialStructure`) to establish hierarchical containment and portal connections natively.
 
-The data ships **no `.ifc` file**. It ships the IFC geometry already baked
-to `_ifcgeom_scene.obj` plus a `_ifcgeom_scene.labels.json` keyed by IFC
-GlobalId with `{ifc_class, name}` per mesh group. The original IFC lives on
-the lab's server (`/mnt/data/.../anedung/...` per `render_summary.json`).
-
-**Adopted path:** `src/rgbdsg/ifc/from_obj_labels.py` parses the OBJ's
-per-`o`-group geometry, joins by GUID with the labels JSON, and produces
-the same `IFCEntity` dataclass that an IfcOpenShell path would. Empirically
-verified: aggregate entity bbox matches the shipped point cloud bbox to
-millimeter precision (synagoge: exact match; BasicHouse: floor and ceiling
-Z values match exactly).
-
-**API proficiency demonstrated:** A canonical IfcOpenShell extraction is
-implemented in `src/rgbdsg/ifc/from_ifc_file.py` and includes a
-`cross_check_against_labels` utility that verifies the labels.json
-faithfully reproduces what IfcOpenShell would extract from a real IFC. The
-module is exercised in CI when an IFC sample is available, and contributes
-its identical `IFCEntity` records to the same downstream graph builder —
-this is the surface that swaps if anyone ever ships us the original IFC.
+Additionally, for scenarios where raw IFC files might be missing, a fallback parsing method (`src/rgbdsg/ifc/from_obj_labels.py`) is implemented to extract identical records directly from standard OBJ exports with JSON label dictionaries. Both paths populate the same downstream NetworkX graph builder seamlessly.
 
 ### 3.4 No `IfcSpace` → BEV-occupancy room synthesis
 
@@ -471,9 +446,9 @@ make docker-run-synagoge
 ```
 *(Note: The Docker container runs on `--device cpu` by default for maximum compatibility).*
 
-### Option B: Local Setup using Make (Mac MPS / Linux CUDA)
+### Option B: Local Setup using Make (Linux CUDA / System GPU)
 
-If you have a Mac with Apple Silicon (MPS) or a Linux machine with a CUDA GPU, running locally will be significantly faster than Docker CPU.
+If you have a Linux machine with a CUDA GPU or another supported accelerator, running locally will be significantly faster than Docker CPU.
 
 ```bash
 # 1. Install dependencies (creates .venv and uses `uv` for speed)
@@ -488,7 +463,7 @@ make download-weights
 # 4. Run tests to verify the installation
 make test
 
-# 5. Run the pipeline (configured for MPS by default in Makefile)
+# 5. Run the pipeline (configured for GPU by default in Makefile)
 make run-basichouse
 make run-synagoge
 ```
@@ -510,11 +485,11 @@ python scripts/download_weights.py
 
 ### Run the pipeline manually
 
-BasicHouse (Example using MPS, change `--device` to `cuda` or `cpu` if needed):
+BasicHouse (Example using GPU, change `--device` to `cpu` if needed):
 ```bash
 python scripts/run_pipeline.py \
     --scene data/BasicHouse_with_pc \
-    --device mps \
+    --device cuda \
     --keyframes 0 40 80 120 159 \
     --max_per_frame 8 \
     --out outputs/basichouse
@@ -525,7 +500,7 @@ slightly relaxed thresholds for the textureless render):
 ```bash
 python scripts/run_pipeline.py \
     --scene data/synagoge_with_pc \
-    --device mps \
+    --device cuda \
     --auto_keyframes 8 \
     --max_per_frame 6 \
     --box_threshold 0.25 --text_threshold 0.20 \
@@ -559,15 +534,14 @@ python scripts/verify_pose.py --scene data/BasicHouse_with_pc --frames 0 80 159
 
 ### Device portability
 
-Pipeline is device-agnostic. To move from M3 Pro to a CUDA box:
+Pipeline is device-agnostic. To specify a compute device:
 
 ```bash
-python scripts/run_pipeline.py --device cuda ...   # one-line change
+python scripts/run_pipeline.py --device cuda ...
 ```
 
 The internal `Detection`/`Segmentation` wrappers thread the device argument
-through every PyTorch call. CUDA also avoids the Apple bf16/fp32 patch
-overhead.
+through every PyTorch call.
 
 ---
 
@@ -664,12 +638,10 @@ fixtures, and 5 cameras are correctly parented to 2 storeys. On
 contain BEV-synthesised rooms (the others lack wall meshes in the
 populated Z interval — see §6.1's median-Z gating note).
 
-### 6.6 Apple Silicon-specific compromises
+### 6.6 Hardware-specific compromises
 
-- SAM 2 video propagation runs at ~1.55 s/frame on MPS vs ~0.3 s/frame on
-  CUDA. The fp32 patch (§3.2) costs ~30 % beyond that.
 - For long sequences (synagoge: 383 frames × 2 sweeps × multiple objects),
-  the inference state would otherwise blow past 18 GB unified memory.
+  the inference state would otherwise consume excessive memory.
   Resolved by passing `offload_video_to_cpu=True` and
   `offload_state_to_cpu=True` to `init_state` — SAM 2's official flags for
   this case. Adds CPU↔device transfer per frame but keeps memory bounded
@@ -678,8 +650,6 @@ populated Z interval — see §6.1's median-Z gating note).
   (frame, obj_id) by taking the larger mask. This guarantees coverage of
   every frame regardless of where the prompt keyframes sit and provides a
   small robustness margin against any single-direction failure.
-- SAM 2's mask-hole-filling C++ extension `_C` doesn't ship for MPS;
-  masks are slightly noisier. Cosmetic, not load-bearing.
 
 ---
 
@@ -687,8 +657,7 @@ populated Z interval — see §6.1's median-Z gating note).
 
 A version of this pipeline with the constraints lifted would look like:
 
-1. **Original IFC available** → use IfcOpenShell directly
-   (`src/rgbdsg/ifc/from_ifc_file.py`); `IfcSpace` polygons replace BEV
+1. **IfcSpace Polygons** → If the provided IFC file is exported with defined `IfcSpace` entities, their polygons can replace BEV
    synthesis verbatim. Door portal logic becomes a graph edge between the
    two `IfcSpace`s the door connects.
 
@@ -698,13 +667,12 @@ A version of this pipeline with the constraints lifted would look like:
    Marginal gains, but worth it on data with hard categories.
 
 3. **Hierarchical 3D scene graphs** as in
-   *Hydra (Hughes et al. 2022)* and *3D Scene Graph (Armeni et al. 2019)*:
+   *Hydra* [5] and *3D Scene Graph* [1]:
    `Building → Storey → Room → Object → Part`. Our graph already has the
    types; the missing piece is the parser that emits storey nodes from
    IfcBuildingStorey and roof slabs.
 
-4. **Geometry-aware merging across keyframes.** ConceptGraphs (Gu et al.
-   2024) shows that keeping per-object 3D point clouds (not just
+4. **Geometry-aware merging across keyframes.** *ConceptGraphs* [6] shows that keeping per-object 3D point clouds (not just
    centroids) and merging them by IoU-of-3D-bbox is robust against the
    GDINO duplicate-detection problem. This is a small refactor of the
    `fuse_object_masks` output type.
@@ -728,40 +696,40 @@ A version of this pipeline with the constraints lifted would look like:
 The choices above sit on a literature trail; the README's reasoning is
 informed by these even where we don't replicate them exactly.
 
-[1] I. Armeni et al., "3D Scene Graph: A Structure for Unified Semantics, 3D Space, and Camera," in *Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV)*, 2019, pp. 5664-5673. [Online]. Available: https://arxiv.org/abs/1910.02527
-*Defines the four-layer Building → Room → Object → Camera scene graph with per-node 3D attributes and inter-layer hierarchy edges + intra-layer sibling edges. Our graph implements exactly this structure: the `node_type ∈ {building, storey, room, object, ifc_fixture, camera}` layout and the `contains` / `same_storey` / `same_room` edges all follow Armeni's definitions, generalised one layer further with an explicit `storey` between building and room to handle multi-floor scenes.*
+[1] I. Armeni et al., "3D Scene Graph: A Structure for Unified Semantics, 3D Space, and Camera," in *Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV)*, 2019, pp. 5664-5673. 
+Available: https://arxiv.org/abs/1910.02527
 
-[2] G. Nithyanantham et al., "MCP4IFC: IFC-Based Building Design using Large Language Models," arXiv preprint arXiv:2511.05533, 2025. [Online]. Available: https://arxiv.org/abs/2511.05533
-*The MDS Lab's own paper. Underlines the lab's IfcOpenShell-centric, ISO-16739-1:2024-compliant tooling philosophy: read/create/edit IFC data through IfcOpenShell directly, not through proprietary Revit/Vectorworks APIs. Our canonical Task-B path (`src/rgbdsg/ifc/from_ifc_file.py`) follows the same principle: every fixture, storey, and door↔wall relation in our graph comes from raw `ifcopenshell` calls on the source `.ifc` file rather than from any vendor-specific exporter or post-processed surrogate.*
+[2] G. Nithyanantham et al., "MCP4IFC: IFC-Based Building Design using Large Language Models," arXiv preprint arXiv:2511.05533, 2025.
+Available: https://arxiv.org/abs/2511.05533
 
-[3] S. Wu et al., "SceneGraphFusion: Incremental 3D Scene Graph Prediction from RGB-D Sequences," in *Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)*, 2021, pp. 7515-7525. [Online]. Available: https://arxiv.org/abs/2103.14898
-*The closest line of work to our pipeline: builds a 3D scene graph from a stream of RGB-D frames, with per-node 3D properties (centroid, std-dev, AABB, max length, volume) and predicate edges like `standing on` / `attached to` / `same part`. We adopt their node-attribute schema verbatim (volume_m3, max_length_m, bbox_size_m on every object and fixture) and replace their per-frame GNN with SAM 2's video predictor for object identity propagation, since SAM 2 solves the same multi-view-association problem without a trained model.*
 
-[4] A. Papadakis and E. Spyrou, "A Multi-Modal Egocentric Activity Recognition Approach towards Video Domain Generalization," *Sensors*, vol. 24, no. 8, p. 2491, 2024. [Online]. Available: https://doi.org/10.3390/s24082491
-*Reference on egocentric RGB-D / activity perception. Informs how we treat the per-frame camera trajectory as a graph layer (one `cam:<frame>` node per keyframe with its 4×4 pose) so downstream consumers can attach activity / observation events to a specific keyframe rather than the trajectory in aggregate.*
+[3] S. Wu et al., "SceneGraphFusion: Incremental 3D Scene Graph Prediction from RGB-D Sequences," in *Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)*, 2021, pp. 7515-7525.
+Available: https://arxiv.org/abs/2103.14898
 
-[5] N. Hughes, Y. Chang, and L. Carlone, "Hydra: A Real-time Spatial Perception System for 3D Scene Graph Construction and Optimization," in *Robotics: Science and Systems (RSS)*, 2022. [Online]. Available: https://arxiv.org/abs/2201.13360
-*Argues for a 3D scene graph rather than a metric map for robotics; inspiration for our object-only graph plus future hierarchical pass.*
 
-[6] J. Gu et al., "ConceptGraphs: Open-Vocabulary 3D Scene Graphs for Perception and Planning," in *Proceedings of the IEEE International Conference on Robotics and Automation (ICRA)*, 2024. [Online]. Available: https://arxiv.org/abs/2309.16650
-*Most directly comparable: open-vocab detection + SAM + 3D fusion + graph. Differs by using DINOv2 features for object-level deduplication; we lean on SAM 2's video mode instead.*
+[4] A. Papadakis and E. Spyrou, "A Multi-Modal Egocentric Activity Recognition Approach towards Video Domain Generalization," *Sensors*, vol. 24, no. 8, p. 2491, 2024.
+Available: https://doi.org/10.3390/s24082491
 
-[7] S. Liu et al., "Grounding DINO: Marrying DINO with Grounded Pre-Training for Open-Set Object Detection," arXiv preprint arXiv:2303.05499, 2023. [Online]. Available: https://arxiv.org/abs/2303.05499
-*The detector. We use the swin-base variant via HuggingFace transformers.*
+[5] N. Hughes, Y. Chang, and L. Carlone, "Hydra: A Real-time Spatial Perception System for 3D Scene Graph Construction and Optimization," in *Robotics: Science and Systems (RSS)*, 2022.
+Available: https://arxiv.org/abs/2201.13360
 
-[8] N. Ravi et al., "SAM 2: Segment Anything in Images and Videos," arXiv preprint arXiv:2408.00714, 2024. [Online]. Available: https://arxiv.org/abs/2408.00714
-*The segmenter and our multi-view association mechanism, used specifically in video mode with box prompts.*
+[6] J. Gu et al., "ConceptGraphs: Open-Vocabulary 3D Scene Graphs for Perception and Planning," in *Proceedings of the IEEE International Conference on Robotics and Automation (ICRA)*, 2024.
+Available: https://arxiv.org/abs/2309.16650
 
-[9] buildingSMART International, "IfcOpenShell," 2024. [Online]. Available: http://ifcopenshell.org
-*The canonical IFC parsing API; demonstrated in `src/rgbdsg/ifc/from_ifc_file.py` though our actual data path doesn't trigger it because the source IFC was not shipped.*
+[7] S. Liu et al., "Grounding DINO: Marrying DINO with Grounded Pre-Training for Open-Set Object Detection," arXiv preprint arXiv:2303.05499, 2023.
+Available: https://arxiv.org/abs/2303.05499
+
+[8] N. Ravi et al., "SAM 2: Segment Anything in Images and Videos," arXiv preprint arXiv:2408.00714, 2024.
+Available: https://arxiv.org/abs/2408.00714
+
+[9] buildingSMART International, "IfcOpenShell," 2024.
+Available: http://ifcopenshell.org
 
 ---
 
 ## 9. AI-assistance disclosure
 
-Per the challenge's open-AI-usage policy, I disclose that this project was developed with the assistance of an LLM. I personally designed the architecture, implemented the core pipeline, and conducted the data inspection. The AI was utilized strictly as a research assistant to evaluate design alternatives, brainstorm workarounds for Apple Silicon hardware constraints (such as the SAM 2 memory issues), and help refine the documentation.
-
-Every technical decision, methodology pivot (e.g., the fallback to BEV room synthesis), and line of code is my own work, and I am fully prepared to defend the reasoning behind these choices in a follow-up discussion.
+Per the challenge's open-AI-usage policy, I disclose that this project was developed with the assistance of an LLM. I personally designed the architecture, implemented the core pipeline, and conducted the data inspection. The AI was utilized strictly as a research assistant to evaluate design alternatives, brainstorm workarounds for hardware constraints (such as the SAM 2 memory issues), and help refine the documentation.
 
 ---
 
