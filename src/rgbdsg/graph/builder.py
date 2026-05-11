@@ -1,37 +1,4 @@
-"""NetworkX scene-graph construction.
-
-The graph G = (V, E) has FOUR node types, mirroring the canonical
-Building → Storey → Room → Object hierarchy from Armeni et al. 2019:
-
-    storey       — a horizontal building level (Z interval), derived from
-                   IfcBuildingStorey or IfcSlab clusters
-    room         — a BEV-synthesized room polygon, child of one storey
-    ifc_fixture  — a structural element parsed from the IFC OBJ + labels
-                   (IfcDoor, IfcWindow, IfcWall*, IfcSlab, ...)
-    object       — a fused 3D detection (ObjectInstance from rgbdsg.fusion)
-
-And edges:
-
-    nearest         — undirected, every object to its K nearest neighbours
-                      by centroid distance. Captures local layout.
-    near            — undirected, every object pair within `near_radius_m`.
-    above / below   — directed, vertically-aligned pairs (XY close, Z apart).
-                      `below` is emitted as the symmetric counterpart of
-                      `above` so consumers don't need to invert.
-    next_to         — undirected, both XY-close (< 1.5 m) AND Z-close
-                      (< 0.5 m). Implies "side-by-side at similar height".
-    aligned_with    — undirected, sharing one centroid axis to within
-                      `align_tol_m` (e.g. two chairs along a wall in a row).
-    contains        — directed Storey → Room, Storey → Object/Fixture
-                      (when the room/centroid Z falls in the storey
-                      interval), Room → Object/Fixture (when the centroid
-                      falls in the room polygon and Z range).
-    connects        — undirected (emitted symmetrically) Room ↔ Room via
-                      a shared IfcDoor portal, tagged with the door's GUID.
-
-We use a `MultiDiGraph` so multiple relation types can coexist on the same
-node pair. Each edge carries `relation` and `weight` (= distance, in metres).
-"""
+"""NetworkX scene-graph construction."""
 
 from __future__ import annotations
 
@@ -45,9 +12,6 @@ from rgbdsg.fusion import ObjectInstance
 from rgbdsg.ifc import IFCEntity
 
 
-# Node-id prefixes — keeps node ids globally unique in one graph.
-# These mirror the four-layer Armeni et al. 2019 scene-graph hierarchy:
-#     building > storey > room > object   (+ ifc_fixture and camera siblings)
 _OBJ_PREFIX = "obj"
 _FIX_PREFIX = "ifc"
 _ROOM_PREFIX = "room"
@@ -78,41 +42,10 @@ def build_graph(
     building_name: str | None = None,
     config: GraphBuildConfig | None = None,
 ) -> nx.MultiDiGraph:
-    """Construct the scene graph.
-
-    Args:
-        objects: fused 3D detections (Task A nodes).
-        ifc_entities: optional structural fixtures from IFC OBJ + labels.
-            Recommend filtering to the geometric subset (`IfcDoor`,
-            `IfcWindow`, `IfcWallStandardCase`, `IfcSlab`, ...) before
-            passing in.
-        rooms: optional list of dicts with keys
-            `{room_id, polygon_xy, z_floor, z_ceiling}` describing a
-            BEV-synthesised room. If provided, hierarchical contains-edges
-            are added wherever an object/fixture centroid lies inside a
-            room polygon and within its z range.
-        storeys: optional list of dicts with keys
-            `{storey_id, z_min, z_max, name}` describing horizontal building
-            levels. If provided, Storey nodes are emitted at the top of the
-            hierarchy and Storey → Room / Object / Fixture `contains` edges
-            are added whenever a child's Z falls in the storey interval.
-        door_wall_pairs: optional list of (door_guid, wall_guid) tuples
-            extracted from `IfcRelFillsElement`/`IfcRelVoidsElement`. When
-            present, a `fills_opening_in` edge is emitted from each door
-            fixture to its host wall fixture. This is the canonical IFC
-            portal relation that is more precise than our heuristic
-            `connects` portal edges between rooms.
-        config: tunables. Defaults are reasonable for indoor scenes.
-
-    Returns:
-        A `nx.MultiDiGraph` with node attributes documented per node type
-        and edge attributes `relation`, `weight`.
-    """
+    """Construct the scene graph."""
     cfg = config or GraphBuildConfig()
     G = nx.MultiDiGraph()
 
-    # ---- nodes -----------------------------------------------------------
-    # ---- Building root (Armeni layer 1) ---------------------------------
     building_node = f"{_BUILDING_PREFIX}:0"
     G.add_node(
         building_node,
@@ -125,8 +58,6 @@ def build_graph(
     obj_centroids: list[np.ndarray] = []
     for o in objects:
         node = f"{_OBJ_PREFIX}:{o.obj_id}"
-        # Per-paper geometric attributes: AABB volume, max-extent length,
-        # std-dev of points (mirrors SceneGraphFusion segment properties).
         bbox_size = np.maximum(0.0, o.bbox_max - o.bbox_min)
         volume_m3 = float(np.prod(bbox_size))
         max_length_m = float(bbox_size.max())
@@ -231,8 +162,6 @@ def build_graph(
         cents = np.asarray(obj_centroids, dtype=np.float64)
         tree = cKDTree(cents)
 
-        # K-NN for `nearest` edges. We add as bidirectional pairs so the
-        # MultiDiGraph reflects symmetric proximity.
         K = min(cfg.knn + 1, len(cents))   # +1 because point's own NN is itself
         dists, idxs = tree.query(cents, k=K)
         for i, (d_row, j_row) in enumerate(zip(dists, idxs)):
@@ -247,11 +176,6 @@ def build_graph(
             G.add_edge(obj_nodes[i], obj_nodes[j],
                        relation="near", weight=d)
 
-        # above/below: vertically-aligned objects (XY close, Z apart). This is
-        # cheap O(N²) for typical N < 100; skip the spatial index.
-        # We emit BOTH directions explicitly: i->j with relation="above" and
-        # j->i with relation="below" so traversal in either direction works
-        # without inverting edge attributes.
         for i in range(len(cents)):
             for j in range(len(cents)):
                 if i == j:
@@ -265,8 +189,6 @@ def build_graph(
                     G.add_edge(obj_nodes[j], obj_nodes[i],
                                relation="below", weight=dz)
 
-        # next_to: side-by-side at similar height (XY close + Z close).
-        # Pure horizontal proximity — distinct from `above`/`below`.
         for i, j in pairs:
             dxy = float(np.linalg.norm(cents[i, :2] - cents[j, :2]))
             dz = abs(float(cents[i, 2] - cents[j, 2]))
@@ -276,9 +198,6 @@ def build_graph(
                 G.add_edge(obj_nodes[j], obj_nodes[i],
                            relation="next_to", weight=dxy)
 
-        # aligned_with: objects share one centroid axis to within tolerance.
-        # E.g. two chairs at the same X form an "aligned along Y" pair —
-        # picks up "row of chairs" / "objects against a wall" patterns.
         for i in range(len(cents)):
             for j in range(i + 1, len(cents)):
                 dx = abs(float(cents[i, 0] - cents[j, 0]))
@@ -320,26 +239,12 @@ def build_graph(
                     G.add_edge(f"{_ROOM_PREFIX}:{r['room_id']}", node,
                                relation="contains", weight=0.0)
 
-    # ---- door-portal `connects` edges between adjacent rooms -------------
-    # For each IfcDoor fixture, find the two rooms whose polygons are
-    # closest to the door centroid (in XY, with the door's Z falling in
-    # the room's vertical interval). Emit a directed `connects` edge in
-    # both directions so room→room traversal works for path-planning use
-    # cases (the canonical robotics consumer of a 3D scene graph).
     if rooms and ifc_entities:
         doors = [e for e in ifc_entities if e.ifc_class == "IfcDoor"]
         if doors and len(rooms) >= 2:
             _add_door_portal_edges(G, doors, rooms)
 
-    # ---- canonical `fills_opening_in` door↔wall edges --------------------
-    # When the source IFC was available we extracted IfcRelFillsElement →
-    # IfcRelVoidsElement chains, which give us an exact door-to-wall
-    # mapping (the door fills an opening, the opening voids a wall). This
-    # is more precise than a geometric inference: a door's host wall is a
-    # *topological* IFC relation, not a guess from proximity.
     if door_wall_pairs and ifc_entities:
-        # Map GUIDs to their canonical node IDs so we only add edges for
-        # fixtures we actually emitted (some may have been filtered out).
         present = {e.guid for e in ifc_entities}
         for door_guid, wall_guid in door_wall_pairs:
             if door_guid in present and wall_guid in present:
@@ -347,10 +252,6 @@ def build_graph(
                            f"{_FIX_PREFIX}:{wall_guid}",
                            relation="fills_opening_in", weight=0.0)
 
-    # ---- storey hierarchical edges --------------------------------------
-    # Storey -> Room / Object / Fixture wherever the child's Z falls in the
-    # storey interval. This implements the Storey layer of the canonical
-    # Armeni-style scene graph.
     if storey_nodes:
         # Storey -> Room
         if rooms:
@@ -380,15 +281,6 @@ def build_graph(
         for node, _pos in cam_nodes:
             G.add_edge(building_node, node, relation="contains", weight=0.0)
 
-    # ---- peer edges: same_storey / same_room (per Armeni 2019 §3) -------
-    # Objects sharing a parent get an explicit "sibling" relation. Useful
-    # for graph-level reasoning ("which other objects share this chair's
-    # room?") without re-traversing the hierarchy each time.
-    # NOTE: we deliberately exclude `ifc_fixture` from sibling sets to avoid
-    # O(F²) edge explosion (e.g. 125 fixtures in a single storey = 7 750
-    # sibling edges per storey, which dominates the graph without adding
-    # actionable semantic information — the hierarchical `contains` chain
-    # already establishes co-storey membership).
     if storey_nodes:
         _add_same_parent_edges(G, parent_relation="contains",
                                parent_node_type="storey",
@@ -411,13 +303,7 @@ def _add_same_parent_edges(
     child_node_type: tuple[str, ...],
     edge_relation: str,
 ) -> None:
-    """For each parent of `parent_node_type`, link its children with `edge_relation`.
-
-    Children are nodes of any of `child_node_type` connected to the parent
-    via an outbound edge whose relation == `parent_relation`. We add a
-    *single direction* sibling edge between each unordered pair to keep
-    the count O(C²/2) per parent (where C = child count).
-    """
+    """For each parent of `parent_node_type`, link its children with `edge_relation`."""
     for parent, parent_data in list(G.nodes(data=True)):
         if parent_data.get("node_type") != parent_node_type:
             continue
@@ -446,20 +332,7 @@ def _add_door_portal_edges(
     rooms: list[dict],
     abut_max_dist_m: float = 1.5,
 ) -> None:
-    """Connect rooms that share a door.
-
-    For each IfcDoor, we measure the minimum distance from the door
-    centroid to every room polygon (treating the polygon as a closed
-    boundary). Rooms within `abut_max_dist_m` are candidates; if exactly
-    two qualify, we emit `connects` edges between them with the door GUID
-    as the edge attribute. If more than two qualify, we keep the two
-    closest. If only one qualifies, no portal edge is added (the door
-    leads outside).
-
-    The Z gating is permissive (within 1 m of the door centroid) because
-    door meshes span the full floor-to-lintel height, so the door's
-    centroid Z is roughly mid-height of the storey.
-    """
+    """Connect rooms that share a door."""
     # Pre-compute room polygon arrays + their z extents.
     poly_data = []
     for r in rooms:
@@ -483,8 +356,6 @@ def _add_door_portal_edges(
         d_xy = door.centroid[:2]
         d_z = float(door.centroid[2])
 
-        # Score each room by min-distance from door to polygon edge,
-        # filtered to rooms whose Z interval the door overlaps.
         candidates: list[tuple[float, dict]] = []
         for rd in poly_data:
             if not (rd["z_floor"] - 0.5 <= d_z <= rd["z_ceiling"] + 0.5):
@@ -529,8 +400,6 @@ def _min_distance_point_to_polygon(p: np.ndarray, poly: np.ndarray) -> float:
     return min_d
 
 
-# ---------- low-level point-in-polygon (ray casting) ------------------------
-
 def _point_in_polygon(p: np.ndarray, poly: np.ndarray) -> bool:
     """Pure-numpy ray-casting test. `poly` is (N, 2)."""
     x, y = float(p[0]), float(p[1])
@@ -548,8 +417,6 @@ def _point_in_polygon(p: np.ndarray, poly: np.ndarray) -> bool:
         j = i
     return inside
 
-
-# ---------- diagnostics -----------------------------------------------------
 
 def graph_summary(G: nx.MultiDiGraph) -> dict:
     """Quick summary for logging / README."""

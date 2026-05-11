@@ -1,23 +1,7 @@
-"""Inspect a HiWi-challenge data bundle and report convention findings.
-
-Goal: surface every silent assumption that could break the pipeline before any
-code is written that depends on it. Specifically:
-
-  * Depth encoding (EXR float meters? PNG16 mm? scaling factor?)
-  * Pose convention (4x4 matrix in poses.txt vs quaternion in frames.json;
-    world-from-camera vs camera-from-world; axis order)
-  * Intrinsics (pinhole? distortion?)
-  * IFC labels (which IFC classes are present? Is IfcSpace there?)
-  * Point-cloud bounds (do they coincide with pose extent?)
-
-Usage:
-    python scripts/inspect_data.py --data_dir ./data
-"""
+"""Inspect a HiWi-challenge data bundle and report convention findings."""
 
 from __future__ import annotations
 
-# OpenCV's EXR reader is gated behind an env var on some builds; set it before
-# importing cv2 so first-party code never has to think about this.
 import os
 os.environ.setdefault("OPENCV_IO_ENABLE_OPENEXR", "1")
 
@@ -32,13 +16,8 @@ import numpy as np
 from PIL import Image
 
 
-# ---------- pose helpers ----------------------------------------------------
-
 def quat_xyzw_to_R(q: np.ndarray) -> np.ndarray:
-    """Convert a unit quaternion (x, y, z, w) to a 3x3 rotation matrix.
-
-    Hamilton convention. Matches the formula used by SciPy / Eigen / Blender.
-    """
+    """Convert a unit quaternion (x, y, z, w) to a 3x3 rotation matrix."""
     x, y, z, w = q
     n = x * x + y * y + z * z + w * w
     if n < 1e-12:
@@ -66,8 +45,6 @@ def load_frames_json(path: Path) -> list[dict[str, Any]]:
         return json.load(f)
 
 
-# ---------- depth helpers ---------------------------------------------------
-
 def read_depth_exr(path: Path) -> np.ndarray:
     """Read a single-channel EXR depth file as float32. Returns NaN-free array."""
     img = cv2.imread(str(path), cv2.IMREAD_UNCHANGED | cv2.IMREAD_ANYDEPTH)
@@ -86,8 +63,6 @@ def read_depth_png16(path: Path) -> np.ndarray:
         arr = arr.astype(np.uint16)
     return arr
 
-
-# ---------- inspection report builders --------------------------------------
 
 def report_intrinsics(scene_dir: Path) -> dict[str, Any]:
     info = json.loads((scene_dir / "camera_info.json").read_text())
@@ -108,16 +83,7 @@ def report_intrinsics(scene_dir: Path) -> dict[str, Any]:
 
 
 def _depth_one_frame(exr_path: Path, png_path: Path, far_m: float) -> dict[str, Any]:
-    """Single-frame depth statistics.
-
-    Saturation handling: in this dataset, "no geometry hit" (e.g. sky, far
-    holes) is encoded as the high-end saturation value, NOT as zero — both
-    encodings are dense. Specifically:
-        EXR (fp16):   ~65504.0 (the fp16 max)
-        PNG16:        65535    (uint16 max)
-    We treat anything above 0.99 * far_m as saturated/invalid for stats and
-    for the EXR<->PNG scale fit.
-    """
+    """Single-frame depth statistics."""
     exr = read_depth_exr(exr_path)
     png = read_depth_png16(png_path)
 
@@ -157,8 +123,6 @@ def report_depth(scene_dir: Path, frame_indices: list[int]) -> dict[str, Any]:
         if exr_path.exists() and png_path.exists():
             per_frame[f"frame_{idx:06d}"] = _depth_one_frame(exr_path, png_path, far_m)
 
-    # Aggregate scale estimate across frames (median is robust to a frame
-    # that's mostly sky / saturated).
     scales = [v["estimated_png_per_meter"] for v in per_frame.values()
               if v["estimated_png_per_meter"] == v["estimated_png_per_meter"]]  # !nan
     median_scale = float(np.median(scales)) if scales else float("nan")
@@ -213,9 +177,6 @@ def report_poses(scene_dir: Path) -> dict[str, Any]:
         "vertical_axis_guess": ["x", "y", "z"][int(np.argmin(t_mat.max(axis=0) - t_mat.min(axis=0)))],
         "txt_vs_json_t_max_abs_diff": t_match,
         "txt_vs_json_R_max_abs_diff": R_match,
-        # interpretation: the translation IS the camera origin in world coords,
-        # which means poses.txt is world-from-camera (the matrix maps points
-        # from the camera frame *into* the world).
         "interpretation": "world-from-camera (T_wc): camera origin = pose[:,:3,3]",
     }
 
@@ -262,11 +223,7 @@ def report_pointcloud(scene_dir: Path) -> dict[str, Any]:
         # determine if binary or ascii
         is_binary = "format binary_little_endian" in header
 
-        # we only need x,y,z bounds — assume those are the first three float
-        # properties (true for Open3D-written and Blender-written PLYs).
         if is_binary:
-            # Read fixed dtype: assume float32 xyz, ignore everything else.
-            # Compute stride from header: count `property` lines until 'end_header'.
             props = [ln for ln in header.splitlines() if ln.startswith("property")]
             # rough stride assuming floats and uchars only
             stride = 0
@@ -317,8 +274,6 @@ def report_pose_in_pointcloud(poses_report: dict, pc_report: dict) -> dict[str, 
         "axis_overshoot_max_m": (pmax - cmax).tolist(),
     }
 
-
-# ---------- driver ----------------------------------------------------------
 
 def inspect_scene(scene_dir: Path) -> dict[str, Any]:
     print(f"\n{'=' * 70}\nSCENE: {scene_dir.name}\n{'=' * 70}")

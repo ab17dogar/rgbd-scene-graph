@@ -1,21 +1,4 @@
-"""OWLv2 open-vocabulary detector wrapper, complementary to Grounding DINO.
-
-Grounding DINO is the primary detector but has known weak spots — it
-under-detects on textureless surfaces (the synagoge problem) and on small
-objects with weak text-feature alignment. OWLv2 (Google, 2023) is a
-different open-vocab architecture trained on a different dataset and
-exhibits a different failure profile, so an ensemble where each detector
-votes on candidate boxes consistently beats either one alone.
-
-Usage:
-    from rgbdsg.detection import OWLv2
-    det = OWLv2(device="mps")
-    boxes = det.detect(rgb, prompt="chair. table. lamp.", threshold=0.10)
-
-We expose the same `Detection` dataclass that GroundingDINO returns so
-downstream code (`detect_keyframes`, `dedup_prompts_3d`, fusion) consumes
-either detector's output uniformly.
-"""
+"""OWLv2 open-vocabulary detector wrapper, complementary to Grounding DINO."""
 
 from __future__ import annotations
 
@@ -27,30 +10,20 @@ import torch
 
 from rgbdsg.detection.grounding_dino import Detection, _resolve_device
 
-# OWLv2 has no MPS-specific ops we know about, but keep the fallback
-# enabled in case future revisions add some.
 os.environ.setdefault("PYTORCH_ENABLE_MPS_FALLBACK", "1")
 
 DEFAULT_OWLV2_MODEL_ID = "google/owlv2-base-patch16-ensemble"
 
 
 def _normalize_owlv2_queries(prompt: str) -> list[str]:
-    """OWLv2 wants a list of phrases, not the GDINO period-joined string.
-
-    Accepts both formats — we tokenize on `.` / `,` / newlines so a single
-    `prompt.txt` works for both detectors without per-detector formatting.
-    """
+    """OWLv2 wants a list of phrases, not the GDINO period-joined string."""
     raw = prompt.replace("\n", ".").replace(",", ".")
     parts = [p.strip() for p in raw.split(".") if p.strip()]
     return parts
 
 
 class OWLv2:
-    """Lazy-loaded OWLv2 inference wrapper.
-
-    Loads the HuggingFace `google/owlv2-base-patch16-ensemble` weights on
-    first use; the forward pass is `detect()`.
-    """
+    """Lazy-loaded OWLv2 inference wrapper."""
 
     def __init__(
         self,
@@ -79,20 +52,7 @@ class OWLv2:
         prompt: str,
         threshold: float = 0.10,
     ) -> list[Detection]:
-        """Run OWLv2 detection on one RGB image with the given prompt.
-
-        Args:
-            image: HxWx3 uint8 RGB array.
-            prompt: period-separated phrases (same format as GDINO).
-                We tokenise into a list of queries inside this function.
-            threshold: post-processed confidence threshold. OWLv2 returns
-                more boxes than GDINO at the same confidence; threshold
-                ~0.10 typically corresponds to GDINO's box_threshold ~0.30.
-
-        Returns:
-            List of `Detection` records (the same dataclass GDINO uses) so
-            downstream code consumes either detector identically.
-        """
+        """Run OWLv2 detection on one RGB image with the given prompt."""
         from PIL import Image
 
         if image.dtype != np.uint8:
@@ -134,16 +94,7 @@ def merge_detections_iou(
     b: list[Detection],
     iou_threshold: float = 0.5,
 ) -> list[Detection]:
-    """Merge two detector outputs by 2D-bbox IoU.
-
-    For each box in `a`, find any overlapping box in `b` (IoU > threshold);
-    keep the higher-scoring one and discard the duplicate. Boxes in `b`
-    that don't match any in `a` are kept. Result is the union of unique
-    detections from both detectors.
-
-    This is the ensemble step: GroundingDINO catches X, OWLv2 catches Y,
-    overlap is collapsed by score, the union is fed to SAM 2.
-    """
+    """Merge two detector outputs by 2D-bbox IoU."""
     if not a:
         return list(b)
     if not b:

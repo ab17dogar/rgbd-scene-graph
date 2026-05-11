@@ -1,9 +1,4 @@
-"""IFC-loader regression tests.
-
-These guard the OBJ→world coordinate transform: a sign flip on Y or Z would
-silently put every entity in the wrong place, then no scene-graph error
-message would point back here.
-"""
+"""IFC-loader regression tests."""
 
 from __future__ import annotations
 
@@ -33,9 +28,7 @@ def test_loader_returns_nonempty(scene_dir: Path) -> None:
 
 
 def test_no_ifcspace_present(scene_dir: Path) -> None:
-    """Documented in inspection_findings.md §1.2 — the data lacks IfcSpace.
-    This test is a regression guard for the methodology pivot rationale.
-    """
+    """Documented in inspection_findings.md §1.2 — the data lacks IfcSpace."""
     ents = load_ifc_entities(scene_dir)
     classes = {e.ifc_class for e in ents}
     assert "IfcSpace" not in classes, \
@@ -50,10 +43,7 @@ def test_door_count_matches_inspection(scene_dir: Path) -> None:
 
 
 def test_entities_lie_within_pointcloud_bbox(scene_dir: Path) -> None:
-    """The OBJ→world rotation is empirical; if we ever break it, every entity
-    will end up outside the architectural pointcloud bbox. This is the
-    cheapest possible alarm for that mistake.
-    """
+    """The OBJ→world rotation is empirical; if we ever break it, every entity"""
     import open3d as o3d
     pcd = o3d.io.read_point_cloud(str(scene_dir / "pointcloud" / "scene.ply"))
     pc_pts = np.asarray(pcd.points)

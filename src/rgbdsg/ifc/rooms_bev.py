@@ -1,54 +1,4 @@
-"""Synthesise rooms from BEV occupancy of the architectural point cloud.
-
-The challenge dataset ships no `IfcSpace` entities (see
-The challenge dataset ships no `IfcSpace` entities. Without
-IfcSpace we cannot do the canonical Task-B Room→Object hierarchy, so we
-*synthesise* room polygons from the architectural pointcloud.
-
-Algorithm
----------
-
-  1. Stratify by storey. Cluster every `IfcSlab` by its Z value (1 cm
-     tolerance). Each cluster is one storey-level horizontal surface.
-     Adjacent clusters bracket a room interior: between (z_lower_slab,
-     z_upper_slab) is the volume people walk in. (We deliberately do NOT
-     reason about "up" vs "down": the answer differs scene-to-scene
-     because of Revit/Blender export conventions, but "between two slabs"
-     is unambiguous in any orientation.)
-
-  2. BEV rasterisation. For each inter-slab interval, take all pointcloud
-     points whose Z is strictly inside the interval (with a small slab-
-     thickness buffer), then discretise their XY onto a 2D grid at
-     `cell_m` resolution (default 5 cm). A cell is occupied if any point
-     falls in it.
-
-  3. Morphological cleanup. A small `closing` seals hairline gaps in
-     walls; a small `opening` removes pepper noise. We deliberately leave
-     doorway gaps open so adjacent rooms can later be linked by IfcDoor
-     proximity rather than isolated.
-
-  4. Free-space connected components. Invert occupancy, label components.
-     The largest (unbounded) component is exterior; we drop it. Components
-     above `min_room_area_m2` become room candidates.
-
-  5. Polygon extraction. Each component's boundary contour is traced
-     (Marching Squares from skimage when available; bbox fallback
-     otherwise) and simplified to ~5 cm tolerance via `shapely.simplify`.
-
-Limitations
------------
-
-  * Curved walls (synagoge has them) get rasterised at `cell_m` resolution;
-    the polygon will look stair-stepped.
-  * Wide-open doorways merge two rooms into one component. A door-closing
-    pre-pass that sets door-pixel cells to occupied would split them; not
-    yet implemented.
-  * Mezzanines and stair voids can confuse the slab-cluster heuristic.
-  * Exterior detection is "largest component" — courtyards misclassified.
-
-This module is conservative — it produces rooms or fails gracefully, never
-crashes the pipeline.
-"""
+"""Synthesise rooms from BEV occupancy of the architectural point cloud."""
 
 from __future__ import annotations
 
@@ -72,8 +22,6 @@ class Room:
     n_pixels: int            # grid pixels of free space (a quality signal)
 
 
-# ---------- public API ------------------------------------------------------
-
 def synthesize_rooms(
     pointcloud_xyz: np.ndarray,
     ifc_entities: list[IFCEntity],
@@ -82,24 +30,7 @@ def synthesize_rooms(
     min_room_area_m2: float = 1.0,
     slab_intervals: list[tuple[float, float]] | None = None,
 ) -> list[Room]:
-    """Build a list of rooms from the architectural pointcloud + IFC entities.
-
-    Args:
-        pointcloud_xyz: (N, 3) world-frame point cloud.
-        ifc_entities: should include `IfcSlab` entries for storey detection.
-            If none are found, we fall back to clustering point-cloud Z
-            density.
-        cell_m: BEV grid resolution. Smaller = sharper polygons + more memory.
-        slab_buffer_m: shrink each inter-slab interval by this much from
-            both ends to avoid sampling the slab itself (which would mark
-            the entire floor as occupied and find no rooms).
-        min_room_area_m2: drop rooms smaller than this.
-        slab_intervals: optional explicit list of (z_low, z_high) pairs that
-            bracket each room interior. Overrides automatic detection.
-
-    Returns:
-        List of Room. Empty if no rooms could be synthesised.
-    """
+    """Build a list of rooms from the architectural pointcloud + IFC entities."""
     if pointcloud_xyz.shape[0] < 1000:
         return []
 
@@ -129,28 +60,12 @@ def synthesize_rooms(
     return rooms
 
 
-# ---------- storey discovery -----------------------------------------------
-
 def _infer_slab_intervals(
     pc: np.ndarray,
     ents: list[IFCEntity],
     cluster_tol_m: float = 0.5,
 ) -> list[tuple[float, float]]:
-    """Find inter-slab (z_low, z_high) intervals that bracket room interiors.
-
-    Algorithm:
-      1. Take every `IfcSlab` entity and grab its `bbox_min[2]` (the slab's
-         lower face Z) and `bbox_max[2]` (its upper face Z). Each slab
-         contributes two horizontal-plane Z values.
-      2. Cluster those Z values with `cluster_tol_m` tolerance. Each cluster
-         represents one physical horizontal surface in the building.
-      3. Sort clusters by Z. Adjacent cluster pairs (z_i, z_{i+1}) bracket
-         a vertical interval; the room interior lives in the larger of those
-         intervals (small intervals are slab thickness itself).
-
-    Fallback (no IfcSlab entities, e.g. a pathological dataset): histogram
-    the point-cloud Z and pick local maxima.
-    """
+    """Find inter-slab (z_low, z_high) intervals that bracket room interiors."""
     slabs = [e for e in ents if e.ifc_class == "IfcSlab"]
     if slabs:
         # Collect every face-plane Z (top and bottom of every slab).
@@ -166,9 +81,6 @@ def _infer_slab_intervals(
                 clusters[-1] = 0.5 * (clusters[-1] + z)
             else:
                 clusters.append(z)
-        # Adjacent pairs bracket either a slab body OR a room interior.
-        # We keep ALL intervals; the caller's slab_buffer_m drops slab bodies
-        # by trimming and the caller's slice-too-thin guard skips them.
         return [(clusters[i], clusters[i + 1]) for i in range(len(clusters) - 1)]
 
     # Fallback: peak-find on the Z histogram.
@@ -191,8 +103,6 @@ def _infer_slab_intervals(
         floors.append(float(centers[run_start + int(np.argmax(sub))]))
     return [(floors[i], floors[i + 1]) for i in range(len(floors) - 1)]
 
-
-# ---------- BEV slice -> rooms ---------------------------------------------
 
 def _rooms_from_slice(
     pts: np.ndarray,
@@ -239,8 +149,6 @@ def _rooms_from_slice(
         area_m2 = npx / px_per_m2
         if area_m2 < min_area_m2:
             continue
-        # Trace the boundary contour. We use ndimage.find_contours via
-        # skimage if available; otherwise fall back to a rectangle hull.
         polygon_xy = _polygon_from_label(
             labels == cid, x_min, y_min, cell_m, pad,
         )
@@ -266,13 +174,7 @@ def _polygon_from_label(
     cell_m: float,
     pad: int,
 ) -> np.ndarray | None:
-    """Trace mask boundary, simplify, return Nx2 world-coord polygon.
-
-    We try `skimage.measure.find_contours` for a Marching-Squares boundary;
-    otherwise we fall back to the axis-aligned bounding rectangle of the
-    mask, which is always available and acceptable for downstream
-    point-in-polygon tests on rectangular rooms (which dominate this data).
-    """
+    """Trace mask boundary, simplify, return Nx2 world-coord polygon."""
     try:
         from skimage import measure
         from shapely.geometry import Polygon
@@ -318,8 +220,6 @@ def _bbox_polygon(
     return np.array([[a, b], [c, b], [c, d], [a, d], [a, b]])
 
 
-# ---------- wall-based room synthesis (preferred path) ---------------------
-
 def _rasterise_mesh_faces_xy(
     vertices: np.ndarray,
     faces: np.ndarray,
@@ -329,12 +229,7 @@ def _rasterise_mesh_faces_xy(
     cell_m: float,
     pad: int,
 ) -> None:
-    """Rasterise mesh triangle faces onto a 2D grid (in-place).
-
-    Each face's three XY-projected vertices form a triangle; we fill the
-    triangle on the grid so the wall's XY footprint becomes a filled
-    region rather than three sparse points.
-    """
+    """Rasterise mesh triangle faces onto a 2D grid (in-place)."""
     try:
         import cv2  # OpenCV's fillPoly is fast and integer-pixel safe.
     except ImportError:
@@ -364,35 +259,7 @@ def synthesize_rooms_from_walls(
     door_dilate_cells: int = 6,
     min_room_area_m2: float = 1.0,
 ) -> list[Room]:
-    """Build rooms by rasterising IfcWall* meshes (walls) and IfcDoor (portal seal).
-
-    The pointcloud-based path (`synthesize_rooms`) leaks rooms into the
-    exterior through open doorways because the architectural pointcloud
-    rarely samples the door panels. Rasterising *wall meshes* gives clean,
-    gap-free wall maps; rasterising *door meshes* on top with a slightly
-    larger dilation seals doorway gaps so the per-room flood-fill stops at
-    each room boundary.
-
-    Algorithm
-    ---------
-      1. Cluster `IfcSlab` Z values into storey levels (orientation-agnostic;
-         same as `synthesize_rooms`).
-      2. For each inter-slab interval, gather every vertex of every IfcWall*
-         and IfcDoor mesh whose Z bbox intersects the interval.
-      3. Rasterise wall vertices to a 2D occupancy grid; dilate by
-         `wall_dilate_cells` (default 2 cells = ~10 cm wall thickness).
-      4. Rasterise door vertices, dilate by `door_dilate_cells` (default 6
-         cells = ~30 cm — wider than wall thickness because doors are wider
-         gaps in the wall). OR them with the wall map.
-      5. Connected components of free space → rooms; drop the largest
-         (exterior) and any below `min_room_area_m2`.
-
-    Returns a list of Room with proper polygons. If no IfcWall* meshes are
-    found, returns an empty list — the caller should fall back to
-    `synthesize_rooms` on the pointcloud.
-    """
-    # Lazy import to avoid pulling load_entity_meshes into modules that don't
-    # need OBJ parsing.
+    """Build rooms by rasterising IfcWall* meshes (walls) and IfcDoor (portal seal)."""
     from rgbdsg.ifc.from_obj_labels import load_entity_meshes
 
     wall_meshes = load_entity_meshes(
@@ -426,16 +293,10 @@ def synthesize_rooms_from_walls(
         if z_high - z_low < 0.5:
             continue
 
-        # Rasterise wall mesh FACES (not just vertices) so wall footprints
-        # become filled regions on the grid.
         wall_grid = np.zeros((ny, nx), dtype=np.uint8)
         any_walls = False
         for m in wall_meshes.values():
             v = m["vertices"]
-            # Require the mesh's median Z to lie inside the interval, not just
-            # its bbox to overlap it. Otherwise a floor-to-ceiling wall would
-            # qualify for both the room interior AND the slab-body interval
-            # above/below it, producing duplicate "rooms".
             z_med = float(np.median(v[:, 2]))
             if not (z_low <= z_med < z_high):
                 continue
@@ -452,10 +313,6 @@ def synthesize_rooms_from_walls(
         door_grid = np.zeros((ny, nx), dtype=np.uint8)
         for m in door_meshes.values():
             v = m["vertices"]
-            # Require the mesh's median Z to lie inside the interval, not just
-            # its bbox to overlap it. Otherwise a floor-to-ceiling wall would
-            # qualify for both the room interior AND the slab-body interval
-            # above/below it, producing duplicate "rooms".
             z_med = float(np.median(v[:, 2]))
             if not (z_low <= z_med < z_high):
                 continue
@@ -520,8 +377,6 @@ def _rooms_from_wall_doors(
     if wall_xy.shape[0] < 3:
         return []
 
-    # Bbox of all rasterised vertices, with a few cells of padding so the
-    # exterior component reaches the grid border.
     all_xy = np.concatenate([wall_xy, door_xy], axis=0) if door_xy.shape[0] else wall_xy
     x_min, y_min = all_xy[:, 0].min(), all_xy[:, 1].min()
     x_max, y_max = all_xy[:, 0].max(), all_xy[:, 1].max()
@@ -588,24 +443,12 @@ def _rooms_from_wall_doors(
     return out
 
 
-# ---------- storey inference for the graph hierarchy ----------------------
-
 def infer_storeys(
     pointcloud_xyz: np.ndarray,
     ifc_entities: list[IFCEntity],
     cluster_tol_m: float = 0.5,
 ) -> list[dict]:
-    """Derive storey definitions (Z intervals) for the graph hierarchy.
-
-    A "storey" here is the Z range between two adjacent slab clusters
-    representing actual floor levels — i.e. the room interiors, not the
-    slab bodies. We use the same `_infer_slab_intervals` clustering as
-    `synthesize_rooms`, then keep only intervals wider than 0.5 m (slab
-    body intervals are typically <0.4 m thick).
-
-    Returns a list of dicts:
-        [{"storey_id": int, "z_min": float, "z_max": float, "name": str}]
-    """
+    """Derive storey definitions (Z intervals) for the graph hierarchy."""
     intervals = _infer_slab_intervals(pointcloud_xyz, ifc_entities,
                                       cluster_tol_m=cluster_tol_m)
     storeys: list[dict] = []
@@ -620,8 +463,6 @@ def infer_storeys(
         })
     return storeys
 
-
-# ---------- conversion to graph-friendly dicts ------------------------------
 
 def rooms_to_graph_dicts(rooms: list[Room]) -> list[dict]:
     """Convert Room dataclasses to the dict shape `graph.build_graph` expects."""

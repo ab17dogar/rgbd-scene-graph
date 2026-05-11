@@ -1,7 +1,4 @@
-"""Geometry primitives: projection, back-projection, transforms.
-
-All functions assume the gl_z convention verified in `docs/coordinates.md`.
-"""
+"""Geometry primitives: projection, back-projection, transforms."""
 from rgbdsg.geometry.camera import (
     backproject,
     backproject_to_world,

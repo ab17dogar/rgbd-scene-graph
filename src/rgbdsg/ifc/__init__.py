@@ -1,21 +1,4 @@
-"""IFC integration: two paths, automatically routed.
-
-Primary (`from_ifc_file.py`): canonical IfcOpenShell extraction from a
-shipped `.ifc` file. Used whenever a scene directory contains one.
-
-    from rgbdsg.ifc.from_ifc_file import (
-        extract_ifc_entities, extract_ifc_storeys,
-        extract_door_wall_relations, find_ifc_path,
-    )
-
-Fallback (`from_obj_labels.py`): the OBJ + labels.json surrogate. Used
-when the source IFC isn't shipped. Returns identical `IFCEntity` records
-so downstream code is path-agnostic.
-
-The convenience entry point `load_scene_ifc` picks the right path
-automatically; `load_ifc_entities` is preserved as a thin alias for
-back-compat with existing callers and tests.
-"""
+"""IFC integration: two paths, automatically routed."""
 from pathlib import Path
 
 from rgbdsg.ifc.entities import IFCEntity
@@ -49,19 +32,7 @@ def load_ifc_entities(
     *,
     prefer_ifc: bool = True,
 ):
-    """Load IFC fixtures, preferring `.ifc` over OBJ+labels when both exist.
-
-    Args:
-        scene_dir: path to a scene directory.
-        classes_filter: optional list of IFC class names to keep.
-        prefer_ifc: if True (default) and an `.ifc` file is present, use
-            the canonical IfcOpenShell path. Otherwise use the OBJ+labels
-            surrogate. Both return `IFCEntity` records in the same world
-            frame, so callers can be agnostic.
-
-    Returns:
-        List of `IFCEntity`.
-    """
+    """Load IFC fixtures, preferring `.ifc` over OBJ+labels when both exist."""
     scene_dir = Path(scene_dir)
     ifc_path = find_ifc_path(scene_dir) if prefer_ifc else None
     if ifc_path is not None:

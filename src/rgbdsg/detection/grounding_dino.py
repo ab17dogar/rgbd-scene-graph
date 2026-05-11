@@ -1,20 +1,4 @@
-"""Open-vocabulary 2D object detection via Grounding DINO.
-
-We use HuggingFace's `transformers` integration of Grounding DINO rather than
-the official IDEA-Research repo because:
-
-    1. The HF wrapper avoids building a CUDA C++ extension (unnecessary on
-       MPS / Apple Silicon, which is our target hardware).
-    2. The same model weights and architecture, with a stable API.
-    3. `from_pretrained()` handles caching and download automatically.
-
-Model: `IDEA-Research/grounding-dino-base` (Swin-Base backbone, 1.6 GB).
-Smaller alternative: `IDEA-Research/grounding-dino-tiny` (660 MB) — swap by
-changing one constant.
-
-Reference: Liu et al., "Grounding DINO: Marrying DINO with Grounded Pre-
-Training for Open-Set Object Detection" (2023).
-"""
+"""Open-vocabulary 2D object detection via Grounding DINO."""
 
 from __future__ import annotations
 
@@ -33,12 +17,7 @@ DEFAULT_MODEL_ID = "IDEA-Research/grounding-dino-base"
 
 @dataclass
 class Detection:
-    """One open-vocab detection in image coordinates.
-
-    bbox: (x_min, y_min, x_max, y_max) in pixels (xyxy format).
-    score: confidence in [0, 1].
-    label: the matched text phrase (e.g. "chair").
-    """
+    """One open-vocab detection in image coordinates."""
     bbox: np.ndarray  # shape (4,) float32
     score: float
     label: str
@@ -61,16 +40,7 @@ class Detection:
 
 
 class GroundingDINO:
-    """Lazy-loaded Grounding DINO inference wrapper.
-
-    Heavy initialisation (model + processor) happens in `__init__`, but the
-    expensive forward pass is in `detect()`.
-
-    Usage:
-        det = GroundingDINO(device="mps")
-        results = det.detect(rgb_image, prompt="chair. table. lamp.",
-                             box_threshold=0.35, text_threshold=0.25)
-    """
+    """Lazy-loaded Grounding DINO inference wrapper."""
 
     def __init__(
         self,
@@ -101,20 +71,7 @@ class GroundingDINO:
         box_threshold: float = 0.35,
         text_threshold: float = 0.25,
     ) -> list[Detection]:
-        """Run open-vocab detection on a single RGB image.
-
-        Args:
-            image: HxWx3 uint8 RGB array.
-            prompt: period-separated phrases, e.g. "chair. table. lamp.".
-                Grounding DINO expects this exact format; the trailing period
-                is non-optional. We normalize lazily inside this function.
-            box_threshold: minimum predicted box confidence in [0, 1].
-            text_threshold: minimum text-image alignment score in [0, 1].
-
-        Returns:
-            List of Detection objects, one per accepted box. Empty list if
-            nothing scores above threshold.
-        """
+        """Run open-vocab detection on a single RGB image."""
         if image.dtype != np.uint8:
             raise TypeError(f"expected uint8 RGB image, got {image.dtype}")
         if image.ndim != 3 or image.shape[2] != 3:
@@ -138,8 +95,6 @@ class GroundingDINO:
             target_sizes=[(H, W)],
         )[0]
 
-        # Different transformers versions return labels under different keys
-        # ("labels" or "text_labels"); handle both.
         labels = results.get("text_labels", results.get("labels", []))
         return [
             Detection(
@@ -150,8 +105,6 @@ class GroundingDINO:
             for box, score, label in zip(results["boxes"], results["scores"], labels)
         ]
 
-
-# ---------- helpers ---------------------------------------------------------
 
 def _resolve_device(device: str | torch.device) -> torch.device:
     if isinstance(device, torch.device):
@@ -166,12 +119,7 @@ def _resolve_device(device: str | torch.device) -> torch.device:
 
 
 def _normalize_prompt(prompt: str) -> str:
-    """Ensure a Grounding DINO prompt is period-separated and lowercased.
-
-    Grounding DINO is sensitive to formatting: phrases must be separated by
-    `. ` and the whole string must end in a period. Casing matters less but
-    lowercase is the convention in the original paper.
-    """
+    """Ensure a Grounding DINO prompt is period-separated and lowercased."""
     p = prompt.strip().lower()
     # Normalize separators: replace newlines and commas with periods.
     for sep in ("\n", ","):

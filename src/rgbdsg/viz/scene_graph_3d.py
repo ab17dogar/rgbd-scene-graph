@@ -1,22 +1,4 @@
-"""3D scene-graph renderer (Open3D + matplotlib).
-
-Generates two artefacts side-by-side with the existing top-down BEV PNG:
-
-  1. `<scene>_graph_3d.png`  — a static 3D snapshot of the scene graph in
-     world coordinates: objects as labelled spheres, IFC fixtures as
-     transparent boxes, rooms as floor polygons extruded slightly,
-     camera trajectory as a polyline, and graph edges drawn as colour-
-     coded line segments between centroids.
-
-  2. `<scene>_graph_3d.html`  — an interactive Plotly scatter3d / mesh3d
-     view of the same content (rotatable, zoomable, hoverable).
-
-The renderer mirrors the layered structure proposed in
-*"3D Scene Graph: A structure for unified semantics, 3D space, and camera"*
-(Armeni et al. 2019) — building / storey / room / object / camera — and
-visualises edges per *SceneGraphFusion* (Wu et al. 2021): each edge gets
-a fixed colour by its `relation` so the rendered image is legible.
-"""
+"""3D scene-graph renderer (Open3D + matplotlib)."""
 
 from __future__ import annotations
 
@@ -95,8 +77,6 @@ def _node_centroid(G: nx.MultiDiGraph, n: str) -> np.ndarray | None:
     return None
 
 
-# ---------- static Matplotlib 3-D PNG ----------------------------------------
-
 def render_3d_png(
     G: nx.MultiDiGraph,
     out_path: Path | str,
@@ -110,14 +90,7 @@ def render_3d_png(
     figsize: tuple[float, float] = (12.0, 10.0),
     dpi: int = 140,
 ) -> None:
-    """Render the scene graph as a 3-D matplotlib PNG.
-
-    `show_relations` is a whitelist — only edges whose `relation` is in
-    this set are drawn (otherwise the figure becomes a hairball on dense
-    graphs). The `same_storey` / `near` / `aligned_with` / `same_room`
-    edges are valuable in the data file but visually noisy; they're off
-    by default. Pass them explicitly if you want them.
-    """
+    """Render the scene graph as a 3-D matplotlib PNG."""
     out_path = Path(out_path)
     out_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -254,8 +227,6 @@ def render_3d_png(
     plt.close(fig)
 
 
-# ---------- interactive Plotly HTML ------------------------------------------
-
 def render_3d_html(
     G: nx.MultiDiGraph,
     out_path: Path | str,
@@ -266,13 +237,7 @@ def render_3d_html(
         "nearest", "next_to", "above",
     ),
 ) -> None:
-    """Render the scene graph as a single-file interactive Plotly HTML.
-
-    Plotly is an optional dep — if it isn't installed the file is written
-    as a placeholder telling the user how to enable it. This keeps the
-    pipeline runnable without forcing a heavy dependency for users who
-    only want the static PNG and the GraphML data.
-    """
+    """Render the scene graph as a single-file interactive Plotly HTML."""
     out_path = Path(out_path)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     try:

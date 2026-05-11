@@ -1,17 +1,4 @@
-"""IFC-entity dataclass used throughout the pipeline.
-
-An IFC entity is one architectural element (wall, door, slab, ...) with:
-  - a stable identifier (the IFC `GlobalId`, present in labels.json),
-  - a class (e.g. `IfcWallStandardCase`),
-  - a human-readable name,
-  - a 3D mesh in WORLD coordinates (Z-up, after applying the OBJ→world
-    rotation).
-
-The pipeline only needs spatial summaries (centroid, bbox), but we keep an
-optional handle to the mesh for visualisation. Heavy mesh data is opt-in
-because we have ~150 entities per scene and we don't want the default API to
-load 100s of MB into memory.
-"""
+"""IFC-entity dataclass used throughout the pipeline."""
 
 from __future__ import annotations
 

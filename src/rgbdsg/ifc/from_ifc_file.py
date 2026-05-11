@@ -1,34 +1,4 @@
-"""Canonical IfcOpenShell-based IFC extraction (Task B primary path).
-
-When the source `.ifc` file is shipped alongside the dataset (placed at
-`<scene_dir>/*.ifc`), this module is the **primary** loader for IFC
-geometry, storey hierarchy, and door↔wall portal relations. It uses
-`ifcopenshell` end-to-end and returns the same `IFCEntity` records as
-`from_obj_labels.py` so the rest of the pipeline is agnostic to which
-path produced them.
-
-The two paths in `rgbdsg.ifc.from_obj_labels` (OBJ + labels.json) and
-this one (canonical IFC) coexist:
-
-    primary:  IfcOpenShell on the .ifc, when present
-    fallback: OBJ groups joined to labels.json by IFC GlobalId, when not
-
-`load_ifc_entities` (in `rgbdsg.ifc`) routes to whichever is available.
-
-Coordinate frame
-================
-IfcOpenShell with `USE_WORLD_COORDS=True` returns IFC's native world
-coordinates (typically Y-up for Revit-exported IFC2x3). Our pipeline's
-verified world frame is the camera-pose frame
-which Blender's OBJ importer rotates to via `(x, y, z) → (x, -y, -z)`.
-We apply that same `OBJ_TO_WORLD` rotation here so IFC entities land in
-the verified frame and align with depth back-projections to within mm.
-
-Run as a module to validate any `.ifc` against a co-located labels.json:
-
-    python -m rgbdsg.ifc.from_ifc_file data/<scene>/<file>.ifc \
-        --cross_check data/<scene>/_ifcgeom_scene.labels.json
-"""
+"""Canonical IfcOpenShell-based IFC extraction (Task B primary path)."""
 
 from __future__ import annotations
 
@@ -43,19 +13,9 @@ import numpy as np
 from rgbdsg.ifc.entities import IFCEntity
 
 
-# Same frame transform used by from_obj_labels.obj_to_world. IFC native
-# coords undergo the same rotation as the OBJ export to land in our
-# verified Blender-camera world frame.
 OBJ_TO_WORLD = np.array([1.0, -1.0, -1.0])
 
 
-# IFC schema classes that have geometric representation we care about for
-# the scene graph. IfcSpace stays in the list because the canonical path
-# *would* extract it on any dataset that ships rooms — even though both
-# challenge scenes have zero IfcSpace entities.
-# NOTE: don't list `IfcWall` here. IfcWallStandardCase (the standard
-# Revit-exported subclass) IS-A IfcWall, so `model.by_type("IfcWall")`
-# returns the same entities again — listing both causes duplicate counts.
 GEOMETRIC_CLASSES = (
     "IfcSpace", "IfcDoor", "IfcWindow",
     "IfcWallStandardCase",
@@ -66,8 +26,6 @@ GEOMETRIC_CLASSES = (
 )
 
 
-# Map IfcSIUnit.Prefix values to a metre-multiplier. IFC stores lengths
-# in some scene unit; we always normalise to metres before storing.
 _SI_PREFIX_TO_METRE = {
     None: 1.0,
     "EXA": 1e18, "PETA": 1e15, "TERA": 1e12, "GIGA": 1e9, "MEGA": 1e6,
@@ -78,14 +36,7 @@ _SI_PREFIX_TO_METRE = {
 
 
 def _length_unit_to_m(model) -> float:
-    """Return how many metres are in one length unit of this IFC's project.
-
-    Revit IFC2x3 exports usually claim metres but sometimes report
-    millimetres in the `IfcSIUnit.Prefix`; either way IfcOpenShell's
-    `create_shape` returns geometry in *project* units, while raw
-    attribute fields like `IfcBuildingStorey.Elevation` are stored in
-    those same units. Always normalise.
-    """
+    """Return how many metres are in one length unit of this IFC's project."""
     try:
         proj = model.by_type("IfcProject")[0]
     except IndexError:
@@ -127,20 +78,7 @@ def extract_ifc_entities(
     classes: tuple[str, ...] = GEOMETRIC_CLASSES,
     apply_world_transform: bool = True,
 ) -> list[IFCEntity]:
-    """Walk an IFC file and produce IFCEntity records for the requested classes.
-
-    Args:
-        ifc_path: path to a `.ifc` file (any IFC2x3 / IFC4 schema).
-        classes: tuple of IFC class names to extract. Schema classes that
-            don't exist in the file's schema are skipped silently.
-        apply_world_transform: whether to apply the `OBJ_TO_WORLD` rotation
-            so coordinates match the camera-pose world frame. Defaults True.
-            Disable only for diagnostics in IFC-native coordinates.
-
-    Returns:
-        List of `IFCEntity` records, in the pipeline's verified world frame
-        (Z growing downward).
-    """
+    """Walk an IFC file and produce IFCEntity records for the requested classes."""
     import ifcopenshell.geom
 
     model = _open_model(ifc_path)
@@ -185,24 +123,7 @@ def extract_ifc_entities(
 
 
 def extract_ifc_storeys(ifc_path: str | Path) -> list[dict]:
-    """Extract `IfcBuildingStorey` records with their world-frame Z extents.
-
-    Each storey gets a Z range computed from the slabs/walls/elements
-    contained in it via `IfcRelContainedInSpatialStructure`. This gives us
-    canonical storey membership without inferring it by Z-clustering.
-
-    Returns:
-        List of dicts with keys:
-            storey_id (str)   : a stable short id derived from name + index
-            guid (str)        : IFC GlobalId
-            name (str)        : storey display name
-            elevation_m (float): Revit storey elevation (raw IFC, before
-                                  world transform)
-            z_min, z_max (float): vertical range in our world frame, derived
-                                  from the bbox of all elements contained
-                                  in the storey
-            n_elements (int)   : how many fixtures are contained in the storey
-    """
+    """Extract `IfcBuildingStorey` records with their world-frame Z extents."""
     import ifcopenshell.geom
 
     model = _open_model(ifc_path)
@@ -241,9 +162,6 @@ def extract_ifc_storeys(ifc_path: str | Path) -> list[dict]:
         if zs:
             z_min, z_max = float(min(zs)), float(max(zs))
         else:
-            # No geometric children: place the storey at its recorded
-            # elevation (converted to metres) ± a 1 m default thickness,
-            # under the world-frame transform.
             elev_raw = float(getattr(storey, "Elevation", 0.0) or 0.0)
             elev_m = elev_raw * unit_m
             z_world = elev_m * OBJ_TO_WORLD[2]
@@ -258,8 +176,6 @@ def extract_ifc_storeys(ifc_path: str | Path) -> list[dict]:
             "z_max": z_max,
             "n_elements": len(elem_list),
         })
-    # Sort by elevation so storey_id 0 = lowest in the BUILDING (regardless
-    # of which way Z points in our world frame).
     out.sort(key=lambda s: s["elevation_m"])
     for new_idx, s in enumerate(out):
         s["storey_id"] = new_idx
@@ -267,18 +183,7 @@ def extract_ifc_storeys(ifc_path: str | Path) -> list[dict]:
 
 
 def extract_door_wall_relations(ifc_path: str | Path) -> list[tuple[str, str]]:
-    """Find canonical (door_guid, wall_guid) pairs via `IfcRelFillsElement`.
-
-    The IFC topology for doors is:
-
-        IfcDoor  --(IfcRelFillsElement)-->  IfcOpeningElement
-        IfcOpeningElement  --(IfcRelVoidsElement)-->  IfcWall*
-
-    i.e. a door fills an opening that voids a wall. Walking those two
-    relations gives us the IfcDoor → IfcWall* relationship without any
-    geometric heuristics, suitable for a precise `fills_opening_in` graph
-    edge.
-    """
+    """Find canonical (door_guid, wall_guid) pairs via `IfcRelFillsElement`."""
     model = _open_model(ifc_path)
 
     # opening_guid -> [wall_guid1, ...]
@@ -313,14 +218,7 @@ def cross_check_against_labels(
     ifc_entities: list[IFCEntity],
     labels_path: Path | str,
 ) -> dict[str, Any]:
-    """Compare an IfcOpenShell extraction against `_ifcgeom_scene.labels.json`.
-
-    Diagnostic for the README's API-proficiency story: the OBJ surrogate
-    path should produce identical per-class entity counts to the IfcOpenShell
-    extraction on the same source IFC. Any mismatch is informative — usually
-    it means the OBJ exporter dropped an entity that has no renderable
-    geometry (e.g. abstract spaces, group containers).
-    """
+    """Compare an IfcOpenShell extraction against `_ifcgeom_scene.labels.json`."""
     import json
     labels = json.loads(Path(labels_path).read_text())
     obj_counts = Counter(v["ifc_class"] for v in labels.values())

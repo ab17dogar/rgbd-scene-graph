@@ -1,26 +1,4 @@
-"""Verify the camera/pose/depth conventions against the shipped point cloud.
-
-The challenge data was rendered in Blender, so two ambiguities matter:
-
-  1. Camera-frame axes: OpenCV (+X right, +Y down, +Z forward) vs.
-     OpenGL/Blender (+X right, +Y up, -Z forward).
-  2. Depth meaning: planar Z-distance (the camera-frame Z component of the
-     world point) vs. Euclidean ray length.
-
-The pose matrix in `pose/poses.txt` is `T_wc` (camera-to-world). To pick the
-correct convention, we back-project a frame's depth under each candidate, push
-to world coords, and measure how close the resulting cloud sits to the shipped
-`pointcloud/scene.ply`. The right convention should give millimeter-to-
-centimeter agreement with the architectural mesh that was rendered.
-
-Run:
-    python scripts/verify_pose.py --scene data/BasicHouse_with_pc \
-        --frames 0 80 159
-
-Outputs (per frame):
-    media/pose_verify/<scene>/frame<idx>_<convention>.ply
-    media/pose_verify/<scene>/_score.json
-"""
+"""Verify the camera/pose/depth conventions against the shipped point cloud."""
 
 from __future__ import annotations
 
@@ -36,8 +14,6 @@ import cv2
 import numpy as np
 from scipy.spatial import cKDTree
 
-
-# ---------- IO ---------------------------------------------------------------
 
 def load_intrinsics(scene_dir: Path) -> tuple[np.ndarray, dict]:
     info = json.loads((scene_dir / "camera_info.json").read_text())
@@ -98,17 +74,6 @@ def load_scene_points(scene_dir: Path) -> np.ndarray:
     return xyz
 
 
-# ---------- back-projection conventions -------------------------------------
-#
-# All four candidates take depth+intrinsics and produce camera-frame XYZ. The
-# "world" step (T_wc @ [X, Y, Z, 1]) is shared so we factor it out.
-#
-# Notation:
-#   d = depth value at pixel (u, v)
-#   x = (u - cx) / fx,  y = (v - cy) / fy   (normalized image coords)
-#   r = sqrt(x² + y² + 1)                    (ray length per unit Z)
-
-
 def backproject_cv_z(uv: np.ndarray, d: np.ndarray, K: np.ndarray) -> np.ndarray:
     """OpenCV convention (+Y down, +Z forward), depth = planar Z distance."""
     fx, fy, cx, cy = K[0, 0], K[1, 1], K[0, 2], K[1, 2]
@@ -132,8 +97,6 @@ def backproject_gl_z(uv: np.ndarray, d: np.ndarray, K: np.ndarray) -> np.ndarray
     fx, fy, cx, cy = K[0, 0], K[1, 1], K[0, 2], K[1, 2]
     x = (uv[:, 0] - cx) / fx
     y = (uv[:, 1] - cy) / fy
-    # Camera looks down -Z; world point is in front of camera, so Z_cam = -d.
-    # Y axis is also flipped relative to image v.
     return np.stack([x * d, -y * d, -d], axis=1)
 
 
@@ -154,8 +117,6 @@ CONVENTIONS: dict[str, Callable] = {
     "gl_ray": backproject_gl_ray,
 }
 
-
-# ---------- driver ----------------------------------------------------------
 
 def transform_to_world(P_cam: np.ndarray, T_wc: np.ndarray) -> np.ndarray:
     """Apply 4x4 T_wc to Nx3 camera-frame points; return Nx3 world points."""
@@ -233,8 +194,6 @@ def verify_one_frame(
         P_cam = fn(uv, d, K)
         P_world = transform_to_world(P_cam, T_wc)
 
-        # Score: median nearest-neighbor distance to the shipped scene cloud.
-        # 1cm-scale = pose+depth+convention all aligned; >>1m = wrong.
         dists, _ = scene_tree.query(P_world, k=1)
         results[name] = {
             "n_points": int(P_world.shape[0]),
@@ -251,8 +210,6 @@ def verify_one_frame(
                 float(np.linalg.norm(P_world.mean(axis=0) - cam_origin)),
         }
 
-        # Save back-projected cloud (red) merged with scene cloud (gray) for
-        # visual inspection in MeshLab / CloudCompare / Open3D Viewer.
         merged_pts = np.concatenate([scene_points, P_world.astype(np.float32)])
         merged_cols = np.concatenate([
             np.full((scene_points.shape[0], 3), 160, dtype=np.uint8),

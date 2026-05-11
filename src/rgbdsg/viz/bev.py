@@ -1,17 +1,4 @@
-"""Top-down (BEV) visualisation of the scene graph and its inputs.
-
-The figure produced by `bev_plot` is the README hero image. It overlays:
-
-  * the architectural point cloud (XY projection, gray)
-  * IFC fixtures (axis-aligned bbox rectangles, colored by class)
-  * synthesised room polygons (filled, semi-transparent)
-  * the camera trajectory (polyline + start/end markers)
-  * detected objects (colored circles at world centroids, labelled)
-  * scene-graph edges between objects (faint lines)
-
-A second helper `mask_overlay` produces per-frame RGB+mask composites used in
-the README's qualitative-results section.
-"""
+"""Top-down (BEV) visualisation of the scene graph and its inputs."""
 
 from __future__ import annotations
 
@@ -37,8 +24,6 @@ _CLASS_COLOR_CACHE: dict[str, tuple[float, float, float]] = {}
 
 def _class_color(name: str) -> tuple[float, float, float]:
     if name not in _CLASS_COLOR_CACHE:
-        # Deterministic hash to colormap index — same class = same color
-        # across plots (so README screenshots are consistent).
         h = abs(hash(name)) % 20
         _CLASS_COLOR_CACHE[name] = plt.cm.tab20(h / 20)[:3]
     return _CLASS_COLOR_CACHE[name]
@@ -62,20 +47,7 @@ def bev_plot(
     figsize: tuple[float, float] = (14, 10),
     dpi: int = 140,
 ) -> Path:
-    """Render a single top-down BEV figure with whichever layers are passed.
-
-    Args:
-        out_path: where to save the PNG.
-        pointcloud_xyz: (N, 3) world-frame architectural cloud. Only XY used.
-        fixtures: IFC fixtures, drawn as bbox rectangles colored by class.
-        rooms: synthesised rooms, drawn as semi-transparent filled polygons.
-        objects: fused object instances, drawn as labelled circles.
-        edges: list of (obj_id_a, obj_id_b) pairs to draw as object-object edges.
-        trajectory_xy: (T, 2) camera trajectory in world XY. Drawn as a line
-            with start/end markers.
-
-    Returns: the path to the saved figure.
-    """
+    """Render a single top-down BEV figure with whichever layers are passed."""
     fig, ax = plt.subplots(figsize=figsize)
     ax.set_aspect("equal")
 

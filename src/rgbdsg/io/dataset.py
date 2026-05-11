@@ -1,19 +1,4 @@
-"""Typed loaders for the HiWi-challenge RGB-D bundles.
-
-Each scene directory has the same layout (`data/<scene>/`):
-    rgb/000000.png ...               RGB frames
-    depth_exr/000000.exr ...         linear-depth EXR (fp16, meters; planar Z)
-    depth_png16/000000.png ...       same depth scaled to uint16 (we ignore)
-    pose/poses.txt                   Nx16 row-major 4x4 T_wc
-    frames.json                      per-frame quaternion + translation + ts
-    camera_info.json                 intrinsics + near/far
-    pointcloud/scene.ply             architectural ground-truth point cloud
-    _ifcgeom_scene.obj               IFC geometry baked to OBJ
-    _ifcgeom_scene.labels.json       per-mesh-group ifc_class + name
-
-This module is the only place that knows about that layout. Everything
-downstream consumes typed objects (`Frame`, `Intrinsics`, `Pose`).
-"""
+"""Typed loaders for the HiWi-challenge RGB-D bundles."""
 
 from __future__ import annotations
 
@@ -30,8 +15,6 @@ import cv2
 import numpy as np
 from PIL import Image
 
-
-# ---------- typed wrappers --------------------------------------------------
 
 @dataclass(frozen=True)
 class Intrinsics:
@@ -55,30 +38,16 @@ class Intrinsics:
 
     @property
     def saturation_threshold_m(self) -> float:
-        """Above this depth, treat the pixel as 'no hit' (sky / past far plane).
-
-        We use 0.95 * far rather than far itself because Blender's float depth
-        encodes 'no hit' at the fp16 saturation value (65504) which is well
-        above far_m, but real geometry can also approach far_m from below for
-        long-range views. 0.95 is a safe gap.
-        """
+        """Above this depth, treat the pixel as 'no hit' (sky / past far plane)."""
         return 0.95 * self.far_m
 
 
 @dataclass(frozen=True)
 class Pose:
-    """4x4 world-from-camera transform.
-
-    Convention: T_wc — applying it to a camera-frame point yields a world-
-    frame point. Camera-frame axes are OpenGL/Blender (+Y up, -Z forward).
-    In the verified gl_z convention.
-    """
+    """4x4 world-from-camera transform."""
     T_wc: np.ndarray  # shape (4, 4), float64
 
     def __post_init__(self) -> None:
-        # Validate shape and bottom row at construction so downstream code can
-        # trust it. Numerical tolerance is generous because file roundtrip
-        # introduces ~1e-5 noise in the bottom row of some legacy formats.
         assert self.T_wc.shape == (4, 4), f"expected 4x4, got {self.T_wc.shape}"
         bot = self.T_wc[3]
         assert np.allclose(bot, [0, 0, 0, 1], atol=1e-4), \
@@ -114,16 +83,10 @@ class Frame:
 
     @property
     def valid_depth_mask(self) -> np.ndarray:
-        """Boolean HxW mask: True where depth is finite, positive, < far.
-
-        Used to suppress 'no hit' pixels (sky / past-far rays) before any
-        downstream geometry.
-        """
+        """Boolean HxW mask: True where depth is finite, positive, < far."""
         d = self.depth_m
         return np.isfinite(d) & (d > 0) & (d < self.intrinsics.saturation_threshold_m)
 
-
-# ---------- file readers (low level) ----------------------------------------
 
 def _read_rgb(path: Path) -> np.ndarray:
     """Load an sRGB image as HxWx3 uint8 (NOT BGR; PIL gives RGB by default)."""
@@ -165,14 +128,8 @@ def _load_frames_meta(scene_dir: Path) -> list[dict]:
     return json.loads((scene_dir / "frames.json").read_text())
 
 
-# ---------- dataset ---------------------------------------------------------
-
 class RGBDSequence:
-    """Lazy-loading sequence of `Frame`s from a single scene directory.
-
-    Frames are NOT loaded until indexed. Iteration is cheap; random access
-    is O(1) plus the cost of decoding one RGB + one EXR.
-    """
+    """Lazy-loading sequence of `Frame`s from a single scene directory."""
 
     def __init__(self, scene_dir: Path | str) -> None:
         self.scene_dir = Path(scene_dir).resolve()
