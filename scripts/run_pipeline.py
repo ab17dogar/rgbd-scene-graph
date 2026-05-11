@@ -33,6 +33,7 @@ from rgbdsg.viz import (
     bev_plot,
     render_3d_html,
     render_3d_png,
+    render_tree_graph_png,
     trajectory_xy_from_sequence,
 )
 
@@ -410,6 +411,11 @@ def main() -> None:
     html_3d = args.out / f"{seq.name}_graph_3d.html"
     render_3d_html(G, html_3d, title=f"{seq.name} — 3D scene graph")
     print(f"[out] wrote {html_3d} (interactive Plotly view)")
+
+    print(f"[viz] rendering hierarchical tree graph...")
+    tree_path = args.out / f"{seq.name}_tree.png"
+    render_tree_graph_png(G, tree_path, title=f"{seq.name} — hierarchical scene graph")
+    print(f"[out] wrote {tree_path}")
 
     print(f"[viz] rendering BEV scene graph over occupancy footprint...")
     obj_edges = [(u.split(":")[1], v.split(":")[1])

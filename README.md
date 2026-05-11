@@ -41,6 +41,7 @@ graph, plus the raw graph in GraphML + JSON:
 | `<scene>_objects.json` | Per-object summary (centroid, bbox, label distribution, observation count) |
 | `<scene>_graph_3d.png` | 3D matplotlib rendering of the scene graph in world coordinates |
 | `<scene>_graph_3d.html` | Interactive Plotly 3D view (rotate / zoom in any browser) |
+| `<scene>_tree.png` | 2D hierarchical tree visualization (Building → Storey → Room → Object) |
 | `<scene>_bev.png` | Top-down BEV projection of the same graph over the BEV-occupancy footprint |
 
 ### `BasicHouse_with_pc/` (160 frames, ~16 s, 10 fps, single-storey)
