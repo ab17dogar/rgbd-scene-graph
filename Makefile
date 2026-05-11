@@ -13,15 +13,15 @@ install:
 
 download-weights:
 	@echo "Downloading model weights..."
-	python scripts/download_weights.py
+	.venv/bin/python scripts/download_weights.py
 
 test:
 	@echo "Running tests..."
-	python -m pytest tests/ -v
+	.venv/bin/python -m pytest tests/ -v
 
 run-basichouse:
 	@echo "Running pipeline on BasicHouse (local)..."
-	python scripts/run_pipeline.py \
+	.venv/bin/python scripts/run_pipeline.py \
 		--scene data/BasicHouse_with_pc \
 		--device mps \
 		--keyframes 0 40 80 120 159 \
@@ -30,7 +30,7 @@ run-basichouse:
 
 run-synagoge:
 	@echo "Running pipeline on synagoge (local)..."
-	python scripts/run_pipeline.py \
+	.venv/bin/python scripts/run_pipeline.py \
 		--scene data/synagoge_with_pc \
 		--device mps \
 		--auto_keyframes 8 \
