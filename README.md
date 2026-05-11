@@ -227,7 +227,9 @@ The edges fall into three families, all explicitly named:
 2. **Spatial heuristics on objects**: `nearest`, `near`, `next_to`,
    `above`, `below`, `aligned_with`. Direct implementations of the
    "spatial heuristics (e.g., proximity, nearest-neighbor)" the
-   challenge PDF calls for in Task A.
+   challenge PDF calls for in Task A. These are calculated efficiently 
+   using a 3D KD-Tree (`scipy.spatial.cKDTree`) built over object centroids 
+   to avoid $O(N^2)$ brute-force distance queries.
 
 3. **IFC structural relations**: `fills_opening_in` and `connects`.
    `fills_opening_in` is the canonical IFC topology
