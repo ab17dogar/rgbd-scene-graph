@@ -445,30 +445,66 @@ System Python on macOS is too old / Homebrew Python on macOS 26 has a
 broken `libexpat` link. We bypass both with **`uv`** (Astral's standalone
 Python manager):
 
+## 5. How to reproduce
+
+The easiest way to run the pipeline is using the provided `Makefile`, either locally or via Docker.
+
+### Option A: Using Docker (Recommended for Linux/Windows)
+
+The repository includes a `Dockerfile` to completely containerize the environment, eliminating dependency issues (like OpenCV or SAM 2's C-extensions). 
+
+Build the image (this will install all dependencies and download model weights):
+```bash
+make docker-build
+```
+
+Run the pipeline inside the container (outputs will be written to `./outputs/` on your host):
+```bash
+make docker-run-basichouse
+make docker-run-synagoge
+```
+*(Note: The Docker container runs on `--device cpu` by default for maximum compatibility).*
+
+### Option B: Local Setup using Make (Mac MPS / Linux CUDA)
+
+If you have a Mac with Apple Silicon (MPS) or a Linux machine with a CUDA GPU, running locally will be significantly faster than Docker CPU.
+
+```bash
+# 1. Install dependencies (creates .venv and uses `uv` for speed)
+make install
+
+# 2. Activate the virtual environment
+source .venv/bin/activate
+
+# 3. Download model weights (~2.5 GB)
+make download-weights
+
+# 4. Run tests to verify the installation
+make test
+
+# 5. Run the pipeline (configured for MPS by default in Makefile)
+make run-basichouse
+make run-synagoge
+```
+
+### Option C: Manual Setup
+
+If you prefer to bypass `make`, the project is managed via `uv` (Astral's standalone Python manager):
+
 ```bash
 brew install uv
 uv venv --python 3.11 .venv
 source .venv/bin/activate
 uv pip install -e .             # installs rgbdsg in editable mode
 uv pip install -r requirements.txt
+
+# Download weights
+python scripts/download_weights.py
 ```
 
-### Model weights (~2.5 GB total)
+### Run the pipeline manually
 
-```bash
-python -c "
-from huggingface_hub import snapshot_download
-import urllib.request
-snapshot_download('IDEA-Research/grounding-dino-base', cache_dir='weights/hf_cache')
-urllib.request.urlretrieve(
-    'https://dl.fbaipublicfiles.com/segment_anything_2/092824/sam2.1_hiera_large.pt',
-    'weights/sam2.1_hiera_large.pt')
-"
-```
-
-### Run the pipeline
-
-BasicHouse:
+BasicHouse (Example using MPS, change `--device` to `cuda` or `cpu` if needed):
 ```bash
 python scripts/run_pipeline.py \
     --scene data/BasicHouse_with_pc \
