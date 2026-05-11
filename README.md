@@ -10,6 +10,18 @@ does, why each architectural choice was made, what the data forced us to
 change, and where the limits are*. The code in `src/rgbdsg/` is graded but
 secondary; the reasoning here is the load-bearing contribution.
 
+## Table of Contents
+- [1. Result at a glance](#1-result-at-a-glance) - High-level overview of pipeline outputs, benchmarks, and performance metrics.
+- [2. Pipeline architecture](#2-pipeline-architecture) - The core technical stages from raw data ingestion to scene graph construction.
+- [3. Methodology and justifications](#3-methodology-and-justifications) - Detailed reasoning behind architectural decisions, coordinate conventions, and data fallbacks.
+- [4. Repository layout](#4-repository-layout) - A guide to the codebase structure and module responsibilities.
+- [5. How to reproduce](#5-how-to-reproduce) - Step-by-step instructions for running the pipeline locally using Make and Docker.
+- [6. Limitations and concrete failure modes](#6-limitations-and-concrete-failure-modes) - Honest analysis of edge cases, hardware constraints, and geometric errors.
+- [7. How this should ideally work](#7-how-this-should-ideally-work) - Proposed future improvements for a production-grade IFC integration.
+- [8. Related work](#8-related-work) - Academic literature and frameworks that inspired the pipeline design.
+- [9. AI-assistance disclosure](#9-ai-assistance-disclosure) - Transparency regarding the use of LLMs during development.
+- [10. Reproducibility & data](#10-reproducibility--data) - Information regarding datasets, weights, and tests.
+
 ---
 
 ## 1. Result at a glance
@@ -439,14 +451,6 @@ P_world = T_wc @ [P_cam; 1]
 
 ## 5. How to reproduce
 
-### Environment
-
-System Python on macOS is too old / Homebrew Python on macOS 26 has a
-broken `libexpat` link. We bypass both with **`uv`** (Astral's standalone
-Python manager):
-
-## 5. How to reproduce
-
 The easiest way to run the pipeline is using the provided `Makefile`, either locally or via Docker.
 
 ### Option A: Using Docker (Recommended for Linux/Windows)
@@ -761,12 +765,8 @@ Every technical decision, methodology pivot (e.g., the fallback to BEV room synt
 
 ## 10. Reproducibility & data
 
-- `data/` is gitignored. Original data lives at the Drive folder linked in
-  the challenge brief.
-- `weights/` and `outputs/` are gitignored; weight URLs are pinned in §5.
-- `requirements.txt` is `uv pip freeze` from a clean venv; reproduces the
-  exact dependency tree.
-- Tests land under `tests/`; CI is not configured but `pytest tests/ -v`
-  finishes in ~3 s on a clean checkout.
-- Pose convention is verified empirically every CI run via
-  `tests/test_geometry.py::test_backprojected_points_align_with_pointcloud`.
+- **Data & Artifacts**: `data/`, `weights/`, and `outputs/` are intentionally gitignored to keep the repository clean. The original dataset must be placed in `data/` as per the challenge brief.
+- **Dependencies**: Managed deterministically. `make install` creates a virtual environment and uses `uv` to install the exact dependency tree from `requirements.txt`.
+- **Docker Integration**: A `Dockerfile` is provided alongside the `Makefile` for guaranteed reproducibility on any host operating system (see §5).
+- **Model Weights**: Downloading is fully automated via `make download-weights` (which executes `scripts/download_weights.py`).
+- **Test Suite**: The test suite lives under `tests/` and is executed via `make test`. It empirically verifies critical assumptions, including the geometric pose convention (`tests/test_geometry.py`) and the IFC entity parsing (`tests/test_ifc.py`).

@@ -1,5 +1,6 @@
 # Heavy / generated artefacts
 .venv/
+data/
 .DS_Store
 
 # Python
@@ -12,6 +13,7 @@ __pycache__/
 
 # Pipeline outputs
 runs/
+outputs/
 checkpoints/
 weights/
 models/
