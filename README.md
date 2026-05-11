@@ -25,8 +25,8 @@ change, and where the limits are*. The reasoning here is the core contribution o
 
 ## 1. Result at a glance
 
-The pipeline runs end-to-end on **both** datasets — every frame, with
-duplicate-object merging — on a 2024 Apple Silicon laptop.
+The pipeline runs end-to-end on **both** datasets, every frame, with
+duplicate object merging.
 
 ### Outputs every scene gets
 
