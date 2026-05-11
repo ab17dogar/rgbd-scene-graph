@@ -722,73 +722,32 @@ A version of this pipeline with the constraints lifted would look like:
 The choices above sit on a literature trail; the README's reasoning is
 informed by these even where we don't replicate them exactly.
 
-- **3D Scene Graph: A Structure for Unified Semantics, 3D Space, and
-  Camera** — Armeni et al., ICCV 2019. (`reference-paper-1.pdf`)
-  *Defines the four-layer Building → Room → Object → Camera scene graph
-  with per-node 3D attributes and inter-layer hierarchy edges + intra-
-  layer sibling edges. Our graph implements exactly this structure: the
-  `node_type ∈ {building, storey, room, object, ifc_fixture, camera}`
-  layout and the `contains` / `same_storey` / `same_room` edges all
-  follow Armeni's definitions, generalised one layer further with an
-  explicit `storey` between building and room to handle multi-floor
-  scenes.*
+[1] I. Armeni et al., "3D Scene Graph: A Structure for Unified Semantics, 3D Space, and Camera," in *Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV)*, 2019, pp. 5664-5673. [Online]. Available: https://arxiv.org/abs/1910.02520
+*Defines the four-layer Building → Room → Object → Camera scene graph with per-node 3D attributes and inter-layer hierarchy edges + intra-layer sibling edges. Our graph implements exactly this structure: the `node_type ∈ {building, storey, room, object, ifc_fixture, camera}` layout and the `contains` / `same_storey` / `same_room` edges all follow Armeni's definitions, generalised one layer further with an explicit `storey` between building and room to handle multi-floor scenes.*
 
-- **Hydra: A Real-time Spatial Perception System for 3D Scene Graph
-  Construction and Optimization** — Hughes, Chang, Carlone, RSS 2022.
-  *Argues for a 3D scene graph rather than a metric map for robotics;
-  inspiration for our object-only graph plus future hierarchical pass.*
+[2] N. Hughes, Y. Chang, and L. Carlone, "Hydra: A Real-time Spatial Perception System for 3D Scene Graph Construction and Optimization," in *Robotics: Science and Systems (RSS)*, 2022. [Online]. Available: https://arxiv.org/abs/2201.13360
+*Argues for a 3D scene graph rather than a metric map for robotics; inspiration for our object-only graph plus future hierarchical pass.*
 
-- **SceneGraphFusion: Incremental 3D Scene Graph Prediction from RGB-D
-  Sequences** — Wu, Ma, et al., CVPR 2021. (`reference-paper-2.pdf`)
-  *The closest line of work to our pipeline: builds a 3D scene graph
-  from a stream of RGB-D frames, with per-node 3D properties (centroid,
-  std-dev, AABB, max length, volume) and predicate edges like *standing
-  on / attached to / same part*. We adopt their node-attribute schema
-  verbatim (volume_m3, max_length_m, bbox_size_m on every object and
-  fixture) and replace their per-frame GNN with SAM 2's video predictor
-  for object identity propagation, since SAM 2 solves the same multi-
-  view-association problem without a trained model.*
+[3] S. Wu et al., "SceneGraphFusion: Incremental 3D Scene Graph Prediction from RGB-D Sequences," in *Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)*, 2021, pp. 7515-7525. [Online]. Available: https://arxiv.org/abs/2103.14813
+*The closest line of work to our pipeline: builds a 3D scene graph from a stream of RGB-D frames, with per-node 3D properties (centroid, std-dev, AABB, max length, volume) and predicate edges like `standing on` / `attached to` / `same part`. We adopt their node-attribute schema verbatim (volume_m3, max_length_m, bbox_size_m on every object and fixture) and replace their per-frame GNN with SAM 2's video predictor for object identity propagation, since SAM 2 solves the same multi-view-association problem without a trained model.*
 
-- **A Multi-Modal Egocentric Activity Recognition Approach towards
-  Video Domain Generalization** — Papadakis & Spyrou, MDPI Sensors 2024.
-  (`reference-paper-3.pdf`) *Reference on egocentric RGB-D / activity
-  perception. Informs how we treat the per-frame camera trajectory as a
-  graph layer (one `cam:<frame>` node per keyframe with its 4×4 pose)
-  so downstream consumers can attach activity / observation events to a
-  specific keyframe rather than the trajectory in aggregate.*
+[4] A. Papadakis and E. Spyrou, "A Multi-Modal Egocentric Activity Recognition Approach towards Video Domain Generalization," *Sensors*, vol. 24, no. 8, p. 2491, 2024. [Online]. Available: https://doi.org/10.3390/s24082491
+*Reference on egocentric RGB-D / activity perception. Informs how we treat the per-frame camera trajectory as a graph layer (one `cam:<frame>` node per keyframe with its 4×4 pose) so downstream consumers can attach activity / observation events to a specific keyframe rather than the trajectory in aggregate.*
 
-- **MCP4IFC: IFC-Based Building Design using Large Language Models** —
-  Nithyanantham, Sesterhenn, **Nedungadi**, Garijo, Zenkner, Bartelt,
-  **Lüdtke** — University of Rostock & TU Clausthal, October 2025.
-  (`reference-paper-4.pdf`) *The MDS Lab's own paper. Underlines the
-  lab's IfcOpenShell-centric, ISO-16739-1:2024-compliant tooling
-  philosophy: read/create/edit IFC data through IfcOpenShell directly,
-  not through proprietary Revit/Vectorworks APIs. Our canonical Task-B
-  path (`src/rgbdsg/ifc/from_ifc_file.py`) follows the same principle:
-  every fixture, storey, and door↔wall relation in our graph comes from
-  raw `ifcopenshell` calls on the source `.ifc` file rather than from
-  any vendor-specific exporter or post-processed surrogate.*
+[5] G. Nithyanantham et al., "MCP4IFC: IFC-Based Building Design using Large Language Models," arXiv preprint arXiv:2511.05533, 2025. [Online]. Available: https://arxiv.org/abs/2511.05533
+*The MDS Lab's own paper. Underlines the lab's IfcOpenShell-centric, ISO-16739-1:2024-compliant tooling philosophy: read/create/edit IFC data through IfcOpenShell directly, not through proprietary Revit/Vectorworks APIs. Our canonical Task-B path (`src/rgbdsg/ifc/from_ifc_file.py`) follows the same principle: every fixture, storey, and door↔wall relation in our graph comes from raw `ifcopenshell` calls on the source `.ifc` file rather than from any vendor-specific exporter or post-processed surrogate.*
 
-- **ConceptGraphs: Open-Vocabulary 3D Scene Graphs for Perception and
-  Planning** — Gu, Chaplot, Salakhutdinov, et al., ICRA 2024.
-  *Most directly comparable: open-vocab detection + SAM + 3D fusion +
-  graph. Differs by using DINOv2 features for object-level deduplication;
-  we lean on SAM 2's video mode instead.*
+[6] J. Gu et al., "ConceptGraphs: Open-Vocabulary 3D Scene Graphs for Perception and Planning," in *Proceedings of the IEEE International Conference on Robotics and Automation (ICRA)*, 2024. [Online]. Available: https://arxiv.org/abs/2309.16650
+*Most directly comparable: open-vocab detection + SAM + 3D fusion + graph. Differs by using DINOv2 features for object-level deduplication; we lean on SAM 2's video mode instead.*
 
-- **Grounding DINO: Marrying DINO with Grounded Pre-Training for Open-Set
-  Object Detection** — Liu, Zhang, et al., 2023.
-  *The detector. We use the swin-base variant via HuggingFace
-  transformers.*
+[7] S. Liu et al., "Grounding DINO: Marrying DINO with Grounded Pre-Training for Open-Set Object Detection," arXiv preprint arXiv:2303.05499, 2023. [Online]. Available: https://arxiv.org/abs/2303.05499
+*The detector. We use the swin-base variant via HuggingFace transformers.*
 
-- **SAM 2: Segment Anything in Images and Videos** — Ravi, Gabeur, et al.,
-  Meta AI, 2024.
-  *The segmenter and our multi-view association mechanism, used
-  specifically in video mode with box prompts.*
+[8] N. Ravi et al., "SAM 2: Segment Anything in Images and Videos," arXiv preprint arXiv:2408.00714, 2024. [Online]. Available: https://arxiv.org/abs/2408.00714
+*The segmenter and our multi-view association mechanism, used specifically in video mode with box prompts.*
 
-- **IfcOpenShell** — buildingSMART Technical, ongoing.
-  *The canonical IFC parsing API; demonstrated in
-  `src/rgbdsg/ifc/from_ifc_file.py` though our actual data path doesn't
-  trigger it because the source IFC was not shipped.*
+[9] buildingSMART International, "IfcOpenShell," 2024. [Online]. Available: http://ifcopenshell.org
+*The canonical IFC parsing API; demonstrated in `src/rgbdsg/ifc/from_ifc_file.py` though our actual data path doesn't trigger it because the source IFC was not shipped.*
 
 ---
 
