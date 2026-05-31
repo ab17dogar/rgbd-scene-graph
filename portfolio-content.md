@@ -4,6 +4,7 @@ summary: "An end-to-end pipeline turning egocentric RGB-D into 4-layer 3D semant
 tags: ["ML", "CV"]
 stack: ["Python", "PyTorch", "Grounding DINO", "SAM 2.1", "Open3D", "Docker"]
 order: 2
+current: true
 ---
 
 ## Overview
